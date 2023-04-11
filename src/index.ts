@@ -1,4 +1,5 @@
 import { Backoffice } from './config/backoffice/backoffice';
+import logger from './config/logger/winston.logger';
 
 try {
   new Backoffice().start().catch(handleError);
@@ -7,11 +8,11 @@ try {
 }
 
 process.on('uncaughtException', (err) => {
-  console.log('uncaughtException', err);
+  logger.error(err);
   process.exit(1);
 });
 
 function handleError(e: any) {
-  console.log(e);
+  logger.error(e);
   process.exit(1);
 }
