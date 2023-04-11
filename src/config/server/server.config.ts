@@ -2,6 +2,7 @@ import express from 'express';
 import * as http from 'http';
 import middlewares from '../middlewares/middlewares.config';
 import routes from '../routes/routes.config';
+import errorHandler from '../middlewares/errorHandler/ErrorHandler.middlewares';
 
 export class Server {
   readonly express: express.Express;
@@ -13,6 +14,7 @@ export class Server {
     this.express = express();
     middlewares(this.express);
     routes(this.express);
+    this.express.use(errorHandler);
   }
 
   async listen(): Promise<void> {

@@ -1,5 +1,6 @@
-import { Request, Response } from 'express';
+import { Request, Response, NextFunction } from 'express';
 import { PrismaClient } from '@prisma/client';
+import { ApiError } from '../../../config/middlewares/errorHandler/ApiError.middlewares';
 
 const prisma = new PrismaClient();
 
@@ -9,16 +10,16 @@ export class UsersController {
     this.prisma = prismaClient;
   }
 
-  async allUsers(req: Request, res: Response): Promise<void> {
+  async allUsers(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const user = await prisma.user.findMany();
       res.status(200).json(user);
-    } catch (error) {
-      res.status(500).json(error);
+    } catch (error: any) {
+      next(ApiError.Internal(error.message));
     }
   }
 
-  async createUser(req: Request, res: Response): Promise<void> {
+  async createUser(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const { name, lastname, username, avatar, email, phone, nationality, gender, birthday, blood_type, password } =
         req.body;
@@ -36,37 +37,37 @@ export class UsersController {
         !blood_type ||
         !password
       ) {
-        res.status(403).json({ error: 'Invalid data!' });
+        next(ApiError.Forbbiden());
       }
 
       await prisma.user.create({
         data: { ...req.body, birthday: new Date(birthday), role: 1993 },
       });
       res.status(201).json('CREATED');
-    } catch (error) {
-      res.status(500).json(error);
+    } catch (error: any) {
+      next(ApiError.Internal(error.message));
     }
   }
 
-  async deleteUser(req: Request, res: Response): Promise<void> {
+  async deleteUser(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const { id } = req.body;
-      if (!id) res.status(403).json({ error: 'invalid data!' });
+      if (!id) next(ApiError.Forbbiden());
       await prisma.user.delete({
         where: {
           id: id,
         },
       });
       res.status(200).json('DELETED');
-    } catch (error) {
-      res.status(500).json(error);
+    } catch (error: any) {
+      next(ApiError.Internal(error.message));
     }
   }
 
-  async updateUser(req: Request, res: Response): Promise<void> {
+  async updateUser(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const { id, data } = req.body;
-      if (!id || !data) res.status(403).json({ error: 'Invalid data!' });
+      if (!id || !data) next(ApiError.Forbbiden());
       await prisma.user.update({
         where: {
           id: id,
@@ -74,8 +75,8 @@ export class UsersController {
         data: { ...data },
       });
       res.status(200).json('UPDATED');
-    } catch (error) {
-      res.status(500).json(error);
+    } catch (error: any) {
+      next(ApiError.Internal(error.message));
     }
   }
 }
