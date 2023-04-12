@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "ts-node-dev --transpile-only --respawn --exit-child  ./src/index.ts"
+    "dev": "NODE_ENV=development ts-node-dev --transpile-only --respawn --exit-child  ./src/index.ts"
   },
   "keywords": [],
   "author": "",
@@ -25,7 +25,8 @@
     "cors": "^2.8.5",
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
-    "invariant": "^2.2.4"
+    "invariant": "^2.2.4",
+    "winston": "^3.8.2"
   },
   "config": {
     "commitizen": {

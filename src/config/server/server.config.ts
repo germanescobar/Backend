@@ -2,7 +2,8 @@ import express from 'express';
 import * as http from 'http';
 import middlewares from '../middlewares/middlewares.config';
 import routes from '../routes/routes.config';
-import errorHandler from '../middlewares/errorHandler/ErrorHandler.middlewares';
+import errorHandler from '../middlewares/errorHandler/errorHandler.middlewares';
+import logger from '../logger/winston.logger';
 
 export class Server {
   readonly express: express.Express;
@@ -20,8 +21,8 @@ export class Server {
   async listen(): Promise<void> {
     return new Promise((resolve) => {
       this.httpServer = this.express.listen(this.port, () => {
-        console.log(`🚀 Server running on port ${this.port}`);
-        console.log('Press ctrl + c to stop');
+        logger.info(`🚀 Server running on port ${this.port}`);
+        logger.info('Press ctrl + c to stop');
         resolve();
       });
     });
