@@ -8,7 +8,7 @@ import logger from '../logger/winston.logger';
 export class Server {
   readonly express: express.Express;
   readonly port: number;
-  httpServer?: http.Server;
+  httpServer: http.Server;
 
   constructor(port: number) {
     this.port = port;
@@ -16,14 +16,15 @@ export class Server {
     middlewares(this.express);
     routes(this.express);
     this.express.use(errorHandler);
+    this.httpServer = http.createServer(this.express);
   }
 
-  async listen(): Promise<void> {
+  async listen(): Promise<http.Server> {
     return new Promise((resolve) => {
-      this.httpServer = this.express.listen(this.port, () => {
+      this.httpServer.listen(this.port, () => {
         logger.info(`🚀 Server running on port ${this.port}`);
         logger.info('Press ctrl + c to stop');
-        resolve();
+        resolve(this.httpServer);
       });
     });
   }

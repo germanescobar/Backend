@@ -1,16 +1,13 @@
 import { Request, Response, NextFunction } from 'express';
 import { PrismaClient } from '@prisma/client';
-import { ApiError } from '../../../config/middlewares/errorHandler/ApiError.middlewares';
+import { ApiError } from '../../config/middlewares/errorHandler/ApiError.middlewares';
 
 const prisma = new PrismaClient();
 
 export class UsersController {
-  private prisma: PrismaClient;
-  constructor(prismaClient: PrismaClient) {
-    this.prisma = prismaClient;
-  }
+  constructor() {}
 
-  async allUsers(req: Request, res: Response, next: NextFunction): Promise<void> {
+  static async allUsers(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const user = await prisma.user.findMany();
       res.status(200).json(user);
@@ -19,7 +16,7 @@ export class UsersController {
     }
   }
 
-  async createUser(req: Request, res: Response, next: NextFunction): Promise<void> {
+  static async createUser(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const { name, lastname, username, avatar, email, phone, nationality, gender, birthday, blood_type, password } =
         req.body;
@@ -49,7 +46,7 @@ export class UsersController {
     }
   }
 
-  async deleteUser(req: Request, res: Response, next: NextFunction): Promise<void> {
+  static async deleteUser(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const { id } = req.body;
       if (!id) next(ApiError.Forbbiden());
@@ -64,7 +61,7 @@ export class UsersController {
     }
   }
 
-  async updateUser(req: Request, res: Response, next: NextFunction): Promise<void> {
+  static async updateUser(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const { id, data } = req.body;
       if (!id || !data) next(ApiError.Forbbiden());
