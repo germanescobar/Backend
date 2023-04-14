@@ -15,7 +15,7 @@ model User {
   name         String
   lastname     String
   username     String        @unique
-  avatar       String
+  avatar       String?
   email        String        @unique
   phone        String        @unique
   nationality  String
@@ -76,7 +76,7 @@ model Doctor {
   skills         String[]
   appointments   Appointment[]
   password       String
-  role_id        Role          @relation(fields: [roleId], references: [id])
+  role_id        Role?         @relation(fields: [roleId], references: [id])
   roleId         String
   location       Location      @relation(fields: [locationId], references: [id])
   locationId     String
