@@ -10,41 +10,145 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model PatientId {
-  id         String @id @default(cuid())
-  patient_id User?
-}
-
 model User {
   id           String        @id @default(cuid())
   name         String
   lastname     String
   username     String        @unique
-  avatar       String
+  avatar       String?
   email        String        @unique
   phone        String        @unique
   nationality  String
   gender       String
-  birthday     DateTime
+  birthdate    DateTime
   blood_type   String
   password     String
-  role         Int
+  role_id      Role          @relation(fields: [roleId], references: [id])
+  roleId       String
   appointments Appointment[]
-  bills        Bill[]
-  patient      PatientId?    @relation(fields: [patientId], references: [id])
-  patientId    String?       @unique
+  orders       Order[]
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt
 }
 
-model Appointment {
-  id     String  @id @default(cuid())
-  user   User?   @relation(fields: [userId], references: [id])
-  userId String?
+model Patient {
+  id           String        @id @default(cuid())
+  firstname    String
+  lastname     String
+  isAdult      Boolean
+  email        String        @unique
+  appointments Appointment[]
 }
 
-model Bill {
-  id     String  @id @default(cuid())
-  user   User?   @relation(fields: [userId], references: [id])
-  userId String?
+model Appointment {
+  id           String   @id @default(cuid())
+  user         User     @relation(fields: [userId], references: [id])
+  userId       String
+  patient      Patient? @relation(fields: [patientEmail], references: [email])
+  patientEmail String?
+  doctor       Doctor   @relation(fields: [doctorId], references: [id])
+  doctorId     String
+  Location     Location @relation(fields: [locationId], references: [id])
+  locationId   String
+  Area         Area     @relation(fields: [areaId], references: [id])
+  areaId       String
+  date         DateTime
+  scheduleAt   DateTime
+  Order        Order?   @relation(fields: [orderId], references: [id])
+  orderId      String?
+  reason       String
+  createdAt    DateTime @default(now())
+}
+
+model Doctor {
+  id             String        @id @default(cuid())
+  prefix         String
+  firstname      String
+  lastname       String
+  avatar         String
+  email          String        @unique
+  phone          String        @unique
+  gender         String
+  birthdate      DateTime
+  introduction   String
+  qualifications String[]
+  memberships    String[]
+  skills         String[]
+  appointments   Appointment[]
+  password       String
+  role_id        Role?         @relation(fields: [roleId], references: [id])
+  roleId         String
+  location       Location      @relation(fields: [locationId], references: [id])
+  locationId     String
+  Area           Area          @relation(fields: [areaId], references: [id])
+  areaId         String
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+}
+
+model Role {
+  id     String   @id @default(cuid())
+  role   Int
+  Doctor Doctor[]
+  User   User[]
+}
+
+model Product {
+  id         String   @id @default(cuid())
+  product    String
+  label      String
+  price      Decimal
+  stock      Int
+  dose       String
+  image      String
+  discount   Int
+  category   Category @relation(fields: [categoryId], references: [id])
+  categoryId String
+  Order      Order?   @relation(fields: [orderId], references: [id])
+  orderId    String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+model Category {
+  id       String    @id @default(cuid())
+  category String
+  product  Product[]
+}
+
+model Area {
+  id           String        @id @default(cuid())
+  area         String        @unique
+  price        Decimal
+  doctors      Doctor[]
+  appointments Appointment[]
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+}
+
+model Location {
+  id           String        @id @default(cuid())
+  country      String
+  city         String
+  createdAt    DateTime      @default(now())
+  appointments Appointment[]
+  doctors      Doctor[]
+}
+
+model Order {
+  id           String        @id @default(cuid())
+  user         User          @relation(fields: [userId], references: [id])
+  userId       String
+  products     Product[]
+  appointments Appointment[]
+  total        Decimal
+  state        OrderState
+  createdAt    DateTime      @default(now())
+}
+
+enum OrderState {
+  CREATED
+  PROCESSING
+  COMPLETED
+  CANCELLED
 }

@@ -3,7 +3,7 @@ import { createLogger, format, transports } from 'winston';
 const logger = createLogger({
   transports: [
     new transports.File({
-      filename: `${__dirname}/../../logs/errors.log`,
+      filename: `${__dirname}/../../../logs/errors.log`,
       maxFiles: 10,
       maxsize: 5120000,
       level: 'error',
