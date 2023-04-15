@@ -76,7 +76,7 @@ model Doctor {
   skills         String[]
   appointments   Appointment[]
   password       String
-  role_id        Role?         @relation(fields: [roleId], references: [id])
+  role_id        Role          @relation(fields: [roleId], references: [id])
   roleId         String
   location       Location      @relation(fields: [locationId], references: [id])
   locationId     String
@@ -130,6 +130,7 @@ model Location {
   id           String        @id @default(cuid())
   country      String
   city         String
+  address      String
   createdAt    DateTime      @default(now())
   appointments Appointment[]
   doctors      Doctor[]

@@ -1,6 +1,6 @@
 import Joi from 'Joi';
 
-const registerSchema = Joi.object({
+const registerUserSchema = Joi.object({
   name: Joi.string().required(),
   lastname: Joi.string().required(),
   username: Joi.string().required(),
@@ -13,4 +13,4 @@ const registerSchema = Joi.object({
   password: Joi.string().required(),
 });
 
-export default registerSchema;
+export default registerUserSchema;

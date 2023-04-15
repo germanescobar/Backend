@@ -1,21 +1,24 @@
 import { PrismaClient } from '@prisma/client';
-import { IUser } from '../interfaces/User.interface';
+import { IDoctor } from '../interfaces/Doctor.interface';
 
 const prisma = new PrismaClient();
 
-export class Users {
+export class Doctors {
   constructor() {}
 
-  static async getUser(searchValue: string): Promise<IUser> {
+  static async getDoctor(searchValue: string): Promise<IDoctor> {
     try {
-      return (await prisma.user.findFirstOrThrow({
+      return (await prisma.doctor.findFirstOrThrow({
         where: {
           OR: [{ id: searchValue }, { email: searchValue }],
         },
         include: {
           role_id: true,
+          Area: true,
+          location: true,
+          appointments: true,
         },
-      })) as IUser;
+      })) as IDoctor;
     } catch (error) {
       throw error;
     }

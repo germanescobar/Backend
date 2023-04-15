@@ -1,4 +1,4 @@
-export interface IUserResponse {
+export interface IAuthorizedUser {
   username: string;
   avatar: string;
   email: string;

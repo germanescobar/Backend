@@ -1,5 +1,4 @@
 import { IUser } from '../interfaces/User.interface';
-import { IUserResponse } from '../interfaces/UserResponse.interface';
 
 export class UserDTO {
   readonly username;
