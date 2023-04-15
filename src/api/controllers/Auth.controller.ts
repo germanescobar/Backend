@@ -11,7 +11,7 @@ export class Auth {
       if (token instanceof ApiError) return next(ApiError.Unauthorized());
       res.status(200).json(token);
     } catch (error: any) {
-      next(ApiError.Internal(error.message));
+      return next(ApiError.Internal(error.message));
     }
   }
 
@@ -23,25 +23,25 @@ export class Auth {
     } catch (error: any) {
       if (error instanceof PrismaError) {
         if (error.status === 404) {
-          next(ApiError.NotFound());
+          return next(ApiError.NotFound());
         }
       }
-      next(ApiError.Internal('Unknown Error'));
+      return next(ApiError.Internal('Unknown Error'));
     }
   }
 
   static async register(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      await AuthService.register(req.body);
+      await AuthService.userRegister(req.body);
       res.status(201).json('CREATED');
     } catch (error) {
       if (error instanceof PrismaError) {
         if (error.status === 500) {
-          next(ApiError.Internal('Error unknown in Prisma'));
+          return next(ApiError.Internal('Error unknown in Prisma'));
         }
-        next(ApiError.BadRequest());
+        return next(ApiError.BadRequest());
       }
-      next(ApiError.Internal('Unknown Error'));
+      return next(ApiError.Internal('Unknown Error'));
     }
   }
 }
