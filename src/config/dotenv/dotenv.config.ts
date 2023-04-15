@@ -6,4 +6,5 @@ invariant(process.env.APP_PORT, 'A port must be declared');
 
 export default {
   PORT: process.env.APP_PORT || 4545,
+  SECRET_JWT: process.env.SECRET_JWT as string,
 };

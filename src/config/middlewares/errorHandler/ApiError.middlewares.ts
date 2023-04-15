@@ -1,10 +1,11 @@
 import { IApiError } from './interface/ApiError.interface';
 
-export class ApiError implements IApiError {
+export class ApiError extends Error implements IApiError {
   readonly status: number;
   readonly message: string;
 
   constructor(status: number, message: string) {
+    super();
     this.status = status;
     this.message = message;
   }
