@@ -48,13 +48,13 @@ model Appointment {
   patientEmail String?
   doctor       Doctor   @relation(fields: [doctorId], references: [id])
   doctorId     String
-  Location     Location @relation(fields: [locationId], references: [id])
+  location     Location @relation(fields: [locationId], references: [id])
   locationId   String
-  Area         Area     @relation(fields: [areaId], references: [id])
+  area         Area     @relation(fields: [areaId], references: [id])
   areaId       String
   date         DateTime
   scheduleAt   DateTime
-  Order        Order?   @relation(fields: [orderId], references: [id])
+  order        Order?   @relation(fields: [orderId], references: [id])
   orderId      String?
   reason       String
   createdAt    DateTime @default(now())
@@ -70,17 +70,17 @@ model Doctor {
   phone          String        @unique
   gender         String
   birthdate      DateTime
-  introduction   String
+  introduction   String?
   qualifications String[]
   memberships    String[]
   skills         String[]
   appointments   Appointment[]
   password       String
-  role_id        Role?         @relation(fields: [roleId], references: [id])
+  role_id        Role          @relation(fields: [roleId], references: [id])
   roleId         String
   location       Location      @relation(fields: [locationId], references: [id])
   locationId     String
-  Area           Area          @relation(fields: [areaId], references: [id])
+  area           Area          @relation(fields: [areaId], references: [id])
   areaId         String
   createdAt      DateTime      @default(now())
   updatedAt      DateTime      @updatedAt
@@ -89,7 +89,7 @@ model Doctor {
 model Role {
   id     String   @id @default(cuid())
   role   Int
-  Doctor Doctor[]
+  doctor Doctor[]
   User   User[]
 }
 
@@ -104,7 +104,7 @@ model Product {
   discount   Int
   category   Category @relation(fields: [categoryId], references: [id])
   categoryId String
-  Order      Order?   @relation(fields: [orderId], references: [id])
+  order      Order?   @relation(fields: [orderId], references: [id])
   orderId    String?
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
@@ -130,6 +130,7 @@ model Location {
   id           String        @id @default(cuid())
   country      String
   city         String
+  address      String
   createdAt    DateTime      @default(now())
   appointments Appointment[]
   doctors      Doctor[]

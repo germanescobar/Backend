@@ -1,7 +1,8 @@
 import { Request, Response, NextFunction } from 'express';
 import { ApiError } from '../../config/middlewares/errorHandler/ApiError.middlewares';
+import { ITokenPayload } from '../interfaces/TokenPayload.interface';
 import JWT, { JsonWebTokenError } from 'jsonwebtoken';
-import authorizationSchema from '../schemas/authorizationSchema.schema';
+import authorizationSchema from '../schemas/authorization.schema';
 import env from '../../config/dotenv/dotenv.config';
 
 const authorizationValidator = (req: Request, res: Response, next: NextFunction): void => {
@@ -10,10 +11,12 @@ const authorizationValidator = (req: Request, res: Response, next: NextFunction)
   const { error } = authorizationSchema.validate(ACCESS_TOKEN);
   if (error) return next(ApiError.Forbbiden());
   try {
-    const { id } = JWT.verify(ACCESS_TOKEN, env.SECRET_JWT) as { id: string };
+    const { id, role } = JWT.verify(ACCESS_TOKEN, env.SECRET_JWT) as ITokenPayload;
+
     req.body = {
       ...req.body,
-      id: id,
+      id,
+      role,
     };
     return next();
   } catch (error) {

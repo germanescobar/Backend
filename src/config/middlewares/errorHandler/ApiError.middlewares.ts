@@ -25,6 +25,7 @@ export class ApiError extends Error implements IApiError {
   static NotFound(): ApiError {
     return new ApiError(404, 'Not Found');
   }
+
   static Internal(message: string): ApiError {
     return new ApiError(500, message);
   }

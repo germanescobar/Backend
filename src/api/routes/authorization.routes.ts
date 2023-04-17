@@ -1,14 +1,15 @@
 import { Router } from 'express';
 import { Auth } from '../controllers/Auth.controller';
 import authenticationValidator from '../middlewares/authentication.middlewares';
-import authorizationValidator from '../middlewares/authorization.middleware';
-
-import registerValidator from '../middlewares/register.middlewares';
+import authorizationValidator from '../middlewares/authorization.middlewares';
+import userRegisterValidator from '../middlewares/userRegister.middlewares';
+import doctorRegisterValidator from '../middlewares/doctorRegister.middlewares';
 
 const authRouter = Router();
 
 authRouter.post('/', authenticationValidator, Auth.authentication);
 authRouter.post('/authorization', authorizationValidator, Auth.authorization);
-authRouter.post('/register', registerValidator, Auth.register);
+authRouter.post('/register', userRegisterValidator, Auth.userRegister);
+authRouter.post('/register/doctor', doctorRegisterValidator, Auth.doctorRegister);
 
 export default authRouter;
