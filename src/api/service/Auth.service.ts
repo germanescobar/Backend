@@ -14,7 +14,6 @@ import { IAuthentication } from '../interfaces/Authentication.interface';
 import { AuthenticationDTO as IAuthenticationDTO } from '../DTO/Authentication.dto';
 import { INewDoctor } from '../interfaces/NewDoctor.interface';
 import { ITokenPayload } from '../interfaces/TokenPayload.interface';
-import { IAuthService } from '../interfaces/AuthService.interface';
 import JWT from 'jsonwebtoken';
 import env from '../../config/dotenv/dotenv.config';
 import bcrypt from 'bcrypt';
