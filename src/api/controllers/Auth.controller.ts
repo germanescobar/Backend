@@ -20,11 +20,12 @@ export class Auth {
     }
   }
 
-  static async authorization(req: Request, res: Response, next: NextFunction) {
+  static async authorization(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const tokenPayload: ITokenPayload = req.body;
-      const user = await AuthService.authorization(tokenPayload);
-      res.status(200).json(user);
+
+      const authenticatedAccount = await AuthService.authorization(tokenPayload);
+      res.status(200).json(authenticatedAccount);
     } catch (error) {
       if (error instanceof PrismaError) {
         if (error.status === 404) return next(ApiError.NotFound());
@@ -34,7 +35,7 @@ export class Auth {
     }
   }
 
-  static async register(req: Request, res: Response, next: NextFunction): Promise<void> {
+  static async userRegister(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       await AuthService.userRegister(req.body);
       res.status(201).json('CREATED');
@@ -48,10 +49,18 @@ export class Auth {
       return next(ApiError.Internal('Unknown Error'));
     }
   }
-  static async registerDoctor(req: Request, res: Response, next: NextFunction): Promise<void> {
+  static async doctorRegister(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
+      await AuthService.doctorRegister(req.body);
+      res.status(201).json('CREATED');
     } catch (error) {
-      console.log(error);
+      if (error instanceof PrismaError) {
+        if (error.status === 500) {
+          return next(ApiError.Internal('Error unknown in Prisma'));
+        }
+        return next(ApiError.BadRequest());
+      }
+      return next(ApiError.Internal('Unknown Error'));
     }
   }
 }

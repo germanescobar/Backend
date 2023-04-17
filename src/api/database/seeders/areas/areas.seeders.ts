@@ -21,7 +21,9 @@ const areasSeeder = async () => {
       }
     }
   } catch (error) {
-    console.log(error);
+    logger.info(error);
+    logger.error(error);
+    process.exit(1);
   }
 };
 

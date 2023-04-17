@@ -1,9 +1,10 @@
 import { Request, Response, NextFunction } from 'express';
 import { ApiError } from '../../config/middlewares/errorHandler/ApiError.middlewares';
-import registerUserSchema from '../schemas/register.schema';
+import userRegisterSchema from '../schemas/userRegister.schema';
+import dateformatter from '../utils/dateFormatter.utils';
 
-const registerValidator = (req: Request, res: Response, next: NextFunction): void => {
-  const { error } = registerUserSchema.validate(req.body);
+const userRegisterValidator = (req: Request, res: Response, next: NextFunction): void => {
+  const { error } = userRegisterSchema.validate(req.body);
   if (error) return next(ApiError.BadRequest());
   const { birthdate } = req.body;
   req.body = {
@@ -13,4 +14,4 @@ const registerValidator = (req: Request, res: Response, next: NextFunction): voi
   next();
 };
 
-export default registerValidator;
+export default userRegisterValidator;

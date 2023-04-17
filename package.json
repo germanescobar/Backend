@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "NODE_ENV=development ts-node-dev --transpile-only --respawn --exit-child  ./src/index.ts",
     "prisma:migrate": "npx prisma migrate dev",
+    "prisma:studio": "npx prisma studio",
     "prisma:seeders": "ts-node-dev ./src/api/database/seeders/locations/locations.seeders.ts & ts-node-dev ./src/api/database/seeders/areas/areas.seeders.ts & ts-node-dev ./src/api/database/seeders/roles/roles.seeders.ts",
     "prisma:reset": "npx prisma migrate reset"
   },

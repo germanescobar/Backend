@@ -9,6 +9,6 @@ export interface INewUser {
   gender: string;
   birthdate: Date;
   blood_type: string;
-  roleId: string;
+  role_id: string;
   password: string;
 }

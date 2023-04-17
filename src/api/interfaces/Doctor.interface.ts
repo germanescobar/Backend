@@ -23,7 +23,7 @@ export interface IDoctor {
   roleId: string;
   location: Location;
   locationId: string;
-  Area: Area;
+  area: Area;
   areaId: string;
   createdAt: Date;
   updatedAt: Date;
