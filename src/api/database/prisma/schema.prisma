@@ -91,6 +91,7 @@ model Role {
   role   Int
   doctor Doctor[]
   User   User[]
+  Admin  Admin[]
 }
 
 model Product {
@@ -145,6 +146,15 @@ model Order {
   total        Decimal
   state        OrderState
   createdAt    DateTime      @default(now())
+}
+
+model Admin {
+  id       String @id @default(cuid())
+  name     String
+  email    String @unique
+  password String
+  role_id  Role   @relation(fields: [roleId], references: [id])
+  roleId   String
 }
 
 enum OrderState {

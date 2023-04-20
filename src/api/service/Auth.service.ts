@@ -1,17 +1,20 @@
 import { PrismaClient, Prisma } from '@prisma/client';
 import { Users } from './Users.service';
 import { Doctors } from './Doctors.service';
+import { Admin } from './Admin.service';
 import { ApiError } from '../../config/middlewares/errorHandler/ApiError.middlewares';
 import { UserDTO } from '../DTO/User.dto';
 import { DoctorDTO } from '../DTO/Doctor.dto';
 import { AuthenticationDTO } from '../DTO/Authentication.dto';
+import { AuthenticationDTO as IAuthenticationDTO } from '../DTO/Authentication.dto';
+import { AdminDTO } from '../DTO/Admin.dto';
 import { ILogin } from '../interfaces/Login.interface';
 import { IGetRole } from '../interfaces/GetRole.interface';
 import { IAuthorizedUser } from '../interfaces/AuthorizedUser.interface';
 import { IAuthorizedDoctor } from '../interfaces/AuthorizedDoctor.interface';
+import { IAuthorizedAdmin } from '../interfaces/AuthorizedAdmin.interface';
 import { INewUser } from '../interfaces/NewUser.interface';
 import { IAuthentication } from '../interfaces/Authentication.interface';
-import { AuthenticationDTO as IAuthenticationDTO } from '../DTO/Authentication.dto';
 import { INewDoctor } from '../interfaces/NewDoctor.interface';
 import { ITokenPayload } from '../interfaces/TokenPayload.interface';
 import JWT from 'jsonwebtoken';
@@ -20,7 +23,7 @@ import bcrypt from 'bcrypt';
 import encryptPassword from '../utils/encryptPWD.utils';
 import PrismaError from '../../config/middlewares/errorHandler/PrismaErrorHandler.middleware';
 import { prismaErrorsCodes400, prismaErrorsCodes404 } from '../utils/prismaErrorsCodes.utils';
-import roles from '../utils/roles.utils';
+import { roles } from '../utils/roles.utils';
 import logger from '../../config/logger/winston.logger';
 
 const prisma = new PrismaClient();
@@ -32,14 +35,13 @@ export class AuthService {
   static async authentication({ email, password }: ILogin, emailDomain: number): Promise<IAuthentication | ApiError> {
     try {
       let authenticatedAccount;
-
       if (emailDomain === roles.USER) authenticatedAccount = await Users.getUser(email);
       if (emailDomain === roles.DOCTOR) authenticatedAccount = await Doctors.getDoctor(email);
+      if (emailDomain === roles.ADMIN) authenticatedAccount = await Admin.getAdmin(email);
       if (!authenticatedAccount) return ApiError.Unauthorized();
       const isAuth = await bcrypt.compare(password, authenticatedAccount.password);
       if (!isAuth) return ApiError.Unauthorized();
       const tokenPayload = { ...new AuthenticationDTO(authenticatedAccount) };
-
       const token = this.signToken(tokenPayload);
       return token;
     } catch (error) {
@@ -62,7 +64,10 @@ export class AuthService {
     return { ACCESS_TOKEN };
   }
 
-  static async authorization({ id, role }: ITokenPayload): Promise<IAuthorizedUser | IAuthorizedDoctor | undefined> {
+  static async authorization({
+    id,
+    role,
+  }: ITokenPayload): Promise<IAuthorizedUser | IAuthorizedDoctor | IAuthorizedAdmin> {
     try {
       if (role === roles.USER) {
         const user = await Users.getUser(id);
@@ -74,6 +79,12 @@ export class AuthService {
         const doctorFormatted = new DoctorDTO(doctor);
         return doctorFormatted;
       }
+      if (role === roles.ADMIN) {
+        const admin = await Admin.getAdmin(id);
+        const adminFormatted = new AdminDTO(admin);
+        return adminFormatted;
+      }
+      throw ApiError.BadRequest();
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
         logger.error(error);
