@@ -4,7 +4,6 @@ import doctorRegisterSchema from '../schemas/doctorRegister.schema';
 
 const doctorRegisterValidator = (req: Request, res: Response, next: NextFunction): void => {
   const { error } = doctorRegisterSchema.validate(req.body);
-
   if (error) return next(ApiError.BadRequest());
   const { birthdate, password } = req.body;
   req.body = {
