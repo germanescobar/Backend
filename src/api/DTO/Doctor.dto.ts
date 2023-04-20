@@ -51,3 +51,12 @@ export class DoctorDTO {
     this.appointments = appointments;
   }
 }
+
+export const doctorDTO = (doctor: IDoctor[] | IDoctor) => {
+  if (Array.isArray(doctor)) {
+    return doctor.map((e) => {
+      return { ...new DoctorDTO(e) };
+    });
+  }
+  return new DoctorDTO(doctor);
+};

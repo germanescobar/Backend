@@ -9,7 +9,7 @@ const doctorRegisterValidator = (req: Request, res: Response, next: NextFunction
   req.body = {
     ...req.body,
     birthdate: new Date(birthdate),
-    password: JSON.stringify(password),
+    password,
   };
   next();
 };

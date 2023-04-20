@@ -15,7 +15,7 @@ const formData = (folderName: string) => {
 
     const done = (): void => {
       if (uploadingFile) return;
-      if (uploadingCount > 0) return;
+      if (uploadingCount) return;
       next();
     };
 
@@ -31,7 +31,7 @@ const formData = (folderName: string) => {
       uploadingFile = true;
       uploadingCount++;
       const cloud: UploadStream = cloudinary.uploader.upload_stream(
-        { upload_preset: folderName },
+        { upload_preset: folderName, folder: 'doctors' },
         (error, response) => {
           if (error) next(ApiError.Internal('Cloudinary Error'));
           req.body[key] = response?.secure_url;

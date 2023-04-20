@@ -1,8 +1,8 @@
-import roles from './roles.utils';
+import { roles } from './roles.utils';
 
 const domainChecker = (email: string) => {
   if (email.match(/(@drmebid)/g)) return roles.DOCTOR;
-  if (email.match(/(@admin)/g)) return roles.ADMIN;
+  if (email.match(/(@mebid)/g)) return roles.ADMIN;
   return roles.USER;
 };
 

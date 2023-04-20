@@ -1,6 +1,12 @@
-import { PrismaClient } from '@prisma/client';
+import PrismaError from '../../config/middlewares/errorHandler/PrismaErrorHandler.middleware';
+import logger from '../../config/logger/winston.logger';
+import { ApiError } from '../../config/middlewares/errorHandler/ApiError.middlewares';
+import { PrismaClient, Prisma } from '@prisma/client';
 import { IUser } from '../interfaces/User.interface';
+import { User } from '@prisma/client';
 import { INewUser } from '../interfaces/NewUser.interface';
+import { prismaErrorsCodes400, prismaErrorsCodes404 } from '../utils/prismaErrorsCodes.utils';
+import { IUpdateDataUser } from '../interfaces/UpdateDataUser.interface';
 
 const prisma = new PrismaClient();
 
@@ -18,7 +24,30 @@ export class Users {
         },
       })) as IUser;
     } catch (error) {
-      throw error;
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        logger.error(error);
+        logger.info('Prisma error:', error);
+        if (prismaErrorsCodes400.includes(error.code)) throw new PrismaError(error.message, 400);
+        if (prismaErrorsCodes404.includes(error.code)) throw new PrismaError(error.message, 404);
+        throw new PrismaError(error.message, 500);
+      }
+      throw ApiError.Internal('Error unknown in Prisma');
+    }
+  }
+
+  static async getAllUsers(): Promise<User[]> {
+    try {
+      const user = await prisma.user.findMany();
+      return user;
+    } catch (error) {
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        logger.error(error);
+        logger.info('Prisma error:', error);
+        if (prismaErrorsCodes400.includes(error.code)) throw new PrismaError(error.message, 400);
+        if (prismaErrorsCodes404.includes(error.code)) throw new PrismaError(error.message, 404);
+        throw new PrismaError(error.message, 500);
+      }
+      throw ApiError.Internal('Error unknown in Prisma');
     }
   }
 
@@ -26,7 +55,34 @@ export class Users {
     try {
       await prisma.user.create({ data: { ...newUser, role_id: { connect: { id: newUser.role_id } } } });
     } catch (error) {
-      throw error;
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        logger.error(error);
+        logger.info('Prisma error:', error);
+        if (prismaErrorsCodes400.includes(error.code)) throw new PrismaError(error.message, 400);
+        if (prismaErrorsCodes404.includes(error.code)) throw new PrismaError(error.message, 404);
+        throw new PrismaError(error.message, 500);
+      }
+      throw ApiError.Internal('Error unknown in Prisma');
+    }
+  }
+
+  static async updateUser(id: string, data: IUpdateDataUser): Promise<void> {
+    try {
+      await prisma.user.update({
+        where: {
+          id,
+        },
+        data: { ...data },
+      });
+    } catch (error) {
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        logger.error(error);
+        logger.info('Prisma error:', error);
+        if (prismaErrorsCodes400.includes(error.code)) throw new PrismaError(error.message, 400);
+        if (prismaErrorsCodes404.includes(error.code)) throw new PrismaError(error.message, 404);
+        throw new PrismaError(error.message, 500);
+      }
+      throw ApiError.Internal('Error unknown in Prisma');
     }
   }
 }
