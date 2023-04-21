@@ -33,7 +33,6 @@ export class Products {
 
   static async createProduct(newProduct: INewProduct): Promise<void> {
     try {
-      console.log(newProduct);
       const { category, newCategory, ...remainingProps } = newProduct;
       if (!newCategory) {
         const { id } = await this.getCategory(category);
