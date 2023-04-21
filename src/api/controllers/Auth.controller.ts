@@ -22,7 +22,7 @@ export class Auth {
 
   static async authorization(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      const tokenPayload: ITokenPayload = req.body;
+      const tokenPayload: ITokenPayload = req.user;
 
       const authenticatedAccount = await AuthService.authorization(tokenPayload);
       res.status(200).json(authenticatedAccount);

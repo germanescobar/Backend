@@ -38,6 +38,8 @@ model Patient {
   isAdult      Boolean
   email        String        @unique
   appointments Appointment[]
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
 }
 
 model Appointment {
@@ -95,32 +97,35 @@ model Role {
 }
 
 model Product {
-  id         String   @id @default(cuid())
-  product    String
-  label      String
-  price      Decimal
-  stock      Int
-  dose       String
-  image      String
-  discount   Int
-  category   Category @relation(fields: [categoryId], references: [id])
-  categoryId String
-  order      Order?   @relation(fields: [orderId], references: [id])
-  orderId    String?
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  id          String   @id @default(cuid())
+  product     String   @unique
+  label       String
+  price       Int
+  stock       Int
+  dose        String
+  image       String   @unique
+  discount    Int
+  description String
+  category    Category @relation(fields: [categoryId], references: [id])
+  categoryId  String
+  order       Order?   @relation(fields: [orderId], references: [id])
+  orderId     String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
 
 model Category {
-  id       String    @id @default(cuid())
-  category String
-  product  Product[]
+  id        String    @id @default(cuid())
+  category  String    @unique
+  product   Product[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
 }
 
 model Area {
   id           String        @id @default(cuid())
   area         String        @unique
-  price        Decimal
+  price        Int
   doctors      Doctor[]
   appointments Appointment[]
   createdAt    DateTime      @default(now())
@@ -149,12 +154,14 @@ model Order {
 }
 
 model Admin {
-  id       String @id @default(cuid())
-  name     String
-  email    String @unique
-  password String
-  role_id  Role   @relation(fields: [roleId], references: [id])
-  roleId   String
+  id        String   @id @default(cuid())
+  name      String
+  email     String   @unique
+  password  String
+  role_id   Role     @relation(fields: [roleId], references: [id])
+  roleId    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 enum OrderState {

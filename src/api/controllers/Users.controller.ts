@@ -40,9 +40,9 @@ export class UsersController {
 
   static async updateUser(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      const { id, role, ...data } = req.body;
+      const { id, role } = req.user;
       if (!id || !role) next(ApiError.BadRequest());
-      await Users.updateUser(id, data);
+      await Users.updateUser(id, req.body);
       res.status(200).json('UPDATED');
     } catch (error) {
       if (error instanceof PrismaError) {

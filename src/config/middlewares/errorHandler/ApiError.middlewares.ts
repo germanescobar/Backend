@@ -10,8 +10,8 @@ export class ApiError extends Error implements IApiError {
     this.message = message;
   }
 
-  static BadRequest(): ApiError {
-    return new ApiError(400, 'Bad request');
+  static BadRequest(message?: string): ApiError {
+    return new ApiError(400, `${message || 'Bad request'}`);
   }
 
   static Unauthorized(): ApiError {

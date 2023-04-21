@@ -6,29 +6,68 @@ import { ApiError } from '../../config/middlewares/errorHandler/ApiError.middlew
 import { INewProduct } from '../interfaces/NewProduct.interface';
 import { Category } from '@prisma/client';
 import { IGetCategory } from '../interfaces/GetCategory.interface';
+import { IAllProducts } from '../interfaces/AllProducts.interface';
+import { allProductsFields } from './selectFields/products/allProducts.selectFields';
 
 const prisma = new PrismaClient();
 
 export class Products {
   constructor() {}
 
-  static async createProduct(newProduct: INewProduct) {
+  static async getAllProducts(): Promise<IAllProducts[]> {
     try {
-      const { category, newCategory, ...rest } = newProduct;
+      const products = await prisma.product.findMany({
+        select: allProductsFields,
+      });
+      return products;
+    } catch (error) {
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        logger.info('Prisma error:', error);
+        if (prismaErrorsCodes400.includes(error.code)) throw new PrismaError(error.message, 400);
+        if (prismaErrorsCodes404.includes(error.code)) throw new PrismaError(error.message, 404);
+        throw new PrismaError(error.message, 500);
+      }
+      throw ApiError.Internal('Error unknown in Prisma');
+    }
+  }
+
+  static async createProduct(newProduct: INewProduct): Promise<void> {
+    try {
+      console.log(newProduct);
+      const { category, newCategory, ...remainingProps } = newProduct;
       if (!newCategory) {
         const { id } = await this.getCategory(category);
         await prisma.product.create({
-          data: { ...rest, category: { connect: { id } } },
+          data: { ...remainingProps, category: { connect: { id } } },
         });
         return;
       }
       const { id } = await this.createCategory(newCategory);
       await prisma.product.create({
-        data: { ...rest, category: { connect: { id } } },
+        data: { ...remainingProps, category: { connect: { id } } },
       });
+      return;
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
         logger.error(error);
+        logger.info('Prisma error:', error);
+        if (prismaErrorsCodes400.includes(error.code)) throw new PrismaError(error.message, 400);
+        if (prismaErrorsCodes404.includes(error.code)) throw new PrismaError(error.message, 404);
+        throw new PrismaError(error.message, 500);
+      }
+      throw ApiError.Internal('Error unknown in Prisma');
+    }
+  }
+
+  static async deleteProduct(id: string): Promise<void> {
+    try {
+      await prisma.product.delete({
+        where: {
+          id,
+        },
+      });
+    } catch (error) {
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
         logger.info('Prisma error:', error);
         if (prismaErrorsCodes400.includes(error.code)) throw new PrismaError(error.message, 400);
         if (prismaErrorsCodes404.includes(error.code)) throw new PrismaError(error.message, 404);

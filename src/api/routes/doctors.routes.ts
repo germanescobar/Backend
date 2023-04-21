@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { DoctorsController } from '../controllers/Doctors.controller';
-import { PRESET_CLOUDINARY } from '../utils/constants.utils';
+import { PRESET_CLOUDINARY, DOCTORS_FOLDER_CLOUDINARY } from '../utils/constants.utils';
 import { allowedRoles } from '../utils/roles.utils';
 import formData from '../middlewares/formData.middlewares';
 import restrictInvalidDoctorUpdate from '../middlewares/doctorUpdater.middlewares';
@@ -11,8 +11,8 @@ const doctorRouter = Router();
 doctorRouter.get('/', DoctorsController.getAllDoctors);
 doctorRouter.put(
   '/',
-  authorizationValidator(allowedRoles.GENERAL),
-  formData(PRESET_CLOUDINARY),
+  authorizationValidator(allowedRoles.DOCTORS),
+  formData(PRESET_CLOUDINARY, DOCTORS_FOLDER_CLOUDINARY),
   restrictInvalidDoctorUpdate,
   DoctorsController.updateDoctors
 );

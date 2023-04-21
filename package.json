@@ -47,5 +47,10 @@
   },
   "prisma": {
     "schema": "./src/api/database/prisma/schema.prisma"
+  },
+  "compilerOptions": {
+    "typeRoots": [
+      "./src/config/@types"
+    ]
   }
 }
