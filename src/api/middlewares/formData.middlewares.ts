@@ -7,7 +7,7 @@ import { Request, Response, NextFunction } from 'express';
 import { ApiError } from '../../config/middlewares/errorHandler/ApiError.middlewares';
 import { OBJ_FORM_DATA } from '../utils/constants.utils';
 
-const formData = (folderName: string) => {
+const formData = (preset: string, folderName: string) => {
   return (req: Request, res: Response, next: NextFunction): void => {
     const bb: Busboy = busboy({ headers: req.headers });
     let uploadingCount: number = 0;
@@ -31,7 +31,7 @@ const formData = (folderName: string) => {
       uploadingFile = true;
       uploadingCount++;
       const cloud: UploadStream = cloudinary.uploader.upload_stream(
-        { upload_preset: folderName, folder: 'doctors' },
+        { upload_preset: preset, folder: folderName },
         (error, response) => {
           if (error) next(ApiError.Internal('Cloudinary Error'));
           req.body[key] = response?.secure_url;

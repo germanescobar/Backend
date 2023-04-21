@@ -17,10 +17,12 @@ const authorizationValidator = (
     try {
       const { id, role } = JWT.verify(ACCESS_TOKEN, env.SECRET_JWT) as ITokenPayload;
       if (!allowedRoles.includes(role)) return next(ApiError.Forbbiden());
-      req.body = {
-        ...req.body,
+      req.user = {
         id,
         role,
+      };
+      req.body = {
+        ...req.body,
       };
       return next();
     } catch (error) {

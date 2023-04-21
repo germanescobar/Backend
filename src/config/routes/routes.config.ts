@@ -6,4 +6,5 @@ export default function routes(app: express.Express) {
   app.use('/api/v1/users', routes.users);
   app.use('/api/v1/auth', routes.auth);
   app.use('/api/v1/doctors', routes.doctors);
+  app.use('/api/v1/products', routes.products);
 }

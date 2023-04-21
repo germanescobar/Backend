@@ -1,10 +1,12 @@
 export const roles = {
   ADMIN: 1000,
-  USER: 2023,
   DOCTOR: 1993,
+  USER: 2023,
 };
 
 export const allowedRoles = {
-  ADMIN: [1000],
-  GENERAL: [2023, 1993, 1000],
+  ADMIN: [roles.ADMIN],
+  GENERAL: [roles.ADMIN, roles.USER, roles.DOCTOR],
+  DOCTORS: [roles.ADMIN, roles.DOCTOR],
+  USERS: [roles.ADMIN, roles.USER],
 };
