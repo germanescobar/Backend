@@ -41,7 +41,7 @@ export class Doctors {
         include: {
           role_id: true,
           area: true,
-          location: true,
+          headquarter: true,
           appointments: true,
         },
       })) as IDoctor;
@@ -68,7 +68,7 @@ export class Doctors {
       await prisma.doctor.create({
         data: {
           ...doctor,
-          location: { connect: { id: locationId } },
+          headquarter: { connect: { id: locationId } },
           area: { connect: { id: areaId } },
           role_id: { connect: { id: doctor.role_id } },
         },
@@ -107,6 +107,8 @@ export class Doctors {
       });
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        console.log('hello');
+        console.log(error);
         logger.error(error);
         logger.info('Prisma error:', error);
         if (prismaErrorsCodes400.includes(error.code)) throw new PrismaError(error.message, 400);
@@ -119,7 +121,7 @@ export class Doctors {
 
   private static async getLocation(city: string) {
     try {
-      return await prisma.location.findFirstOrThrow({
+      return await prisma.headquarter.findFirstOrThrow({
         where: { city },
         select: { id: true },
       });

@@ -5,4 +5,6 @@ export interface IRouter {
   auth: Router;
   doctors: Router;
   products: Router;
+  categories: Router;
+  locations: Router;
 }

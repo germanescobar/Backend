@@ -5,11 +5,11 @@ import { VALID_DOCTOR_DOMAIN } from '../utils/constants.utils';
 
 const restrictInvalidDoctorUpdate = (req: Request, res: Response, next: NextFunction): void => {
   for (const key in req.body) {
-    if (!VALID_DOCTOR_FIELDS.includes(key)) return next(ApiError.BadRequest());
+    if (!VALID_DOCTOR_FIELDS.includes(key)) return next(ApiError.BadRequest(`You can't update the field ${key}`));
   }
   const { email } = req.body;
   if (email) {
-    if (!email.match(VALID_DOCTOR_DOMAIN)) return next(ApiError.BadRequest());
+    if (!email.match(VALID_DOCTOR_DOMAIN)) return next(ApiError.BadRequest('Invalid email domain'));
   }
   return next();
 };

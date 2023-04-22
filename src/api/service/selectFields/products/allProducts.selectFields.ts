@@ -10,7 +10,7 @@ export const allProductsFields = {
   description: true,
   category: {
     select: {
-      category: true,
+      name: true,
     },
   },
   createdAt: true,

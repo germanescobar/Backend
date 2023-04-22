@@ -22,9 +22,9 @@ export class DoctorsController {
 
   static async updateDoctors(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      const { id, role, ...data } = req.body;
-      if (!id || !role) next(ApiError.BadRequest());
-      await Doctors.updateDoctor(id, data);
+      const { id, role } = req.user;
+      if (!id || !role) return next(ApiError.BadRequest());
+      await Doctors.updateDoctor(id, req.body);
       res.status(200).json('UPDATED');
     } catch (error) {
       if (error instanceof PrismaError) {
@@ -35,12 +35,13 @@ export class DoctorsController {
     }
   }
 
-  static async deleteDoctors(req: Request, res: Response, next: NextFunction) {
+  static async deleteDoctors(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      const { id, email } = req.body;
-      if (!id) next(ApiError.BadRequest());
+      const { id } = req.user;
+      const { email } = req.body;
+      if (!id) return next(ApiError.BadRequest());
       await Doctors.deleteDoctor(email);
-      res.status(204);
+      res.status(200).json('DELETED');
     } catch (error) {
       if (error instanceof PrismaError) {
         if (error.status === 404) return next(ApiError.NotFound());

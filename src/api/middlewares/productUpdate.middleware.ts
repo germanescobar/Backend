@@ -1,14 +1,12 @@
 import { Request, Response, NextFunction } from 'express';
-import { ApiError } from '../../config/middlewares/errorHandler/ApiError.middlewares';
-import productUpdateSchema from '../schemas/productUpdate.schema';
 
 const productUpdateValidator = (req: Request, res: Response, next: NextFunction) => {
-  const { error } = productUpdateSchema.validate(req.body);
-  if (error) return next(ApiError.BadRequest());
-  const { newCategory, ...remainingProps } = req.body;
-  if (newCategory) return next(ApiError.BadRequest('Invalid field to update'));
+  const { price, stock, discount } = req.body;
   req.body = {
-    ...remainingProps,
+    ...req.body,
+    price: +price,
+    stock: +stock,
+    discount: +discount,
   };
   next();
 };

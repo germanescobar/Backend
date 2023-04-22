@@ -45,11 +45,17 @@ export class AuthService {
       const token = this.signToken(tokenPayload);
       return token;
     } catch (error) {
+      if (error instanceof PrismaError) {
+        logger.error(error);
+        logger.info('Prisma error:', error);
+        if (error.status === 400) throw error;
+      }
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
         logger.error(error);
         logger.info('Prisma error:', error);
+        console.log('hello');
         if (prismaErrorsCodes404.includes(error.code)) throw new PrismaError(error.message, 404);
-        if (prismaErrorsCodes400.includes(error.code)) throw new PrismaError(error.message, 404);
+        if (prismaErrorsCodes400.includes(error.code)) throw new PrismaError(error.message, 400);
         throw new PrismaError(error.message, 500);
       }
       throw ApiError.Internal('Error unknown in Prisma');
