@@ -53,7 +53,6 @@ export class AuthService {
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
         logger.error(error);
         logger.info('Prisma error:', error);
-        console.log('hello');
         if (prismaErrorsCodes404.includes(error.code)) throw new PrismaError(error.message, 404);
         if (prismaErrorsCodes400.includes(error.code)) throw new PrismaError(error.message, 400);
         throw new PrismaError(error.message, 500);

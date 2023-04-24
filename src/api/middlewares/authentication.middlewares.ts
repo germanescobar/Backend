@@ -14,6 +14,7 @@ const authenticationValidator = (req: Request, res: Response, next: NextFunction
     ...req.body,
     emailDomain,
   };
+
   next();
 };
 

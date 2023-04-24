@@ -12,7 +12,7 @@ export interface INewDoctor {
   memberships?: string[];
   skills: string[];
   password: string;
-  location: Headquarter;
+  headquarter: Headquarter;
   role_id: string;
 }
 

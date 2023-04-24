@@ -2,9 +2,10 @@ import { PrismaClient, Prisma } from '@prisma/client';
 import { IDoctor } from '../interfaces/Doctor.interface';
 import { INewDoctor } from '../interfaces/NewDoctor.interface';
 import { IUpdateDataDoctor } from '../interfaces/UpdateDataDoctor.interface';
+import { IAllDoctors } from '../interfaces/AllDoctors.interface';
+import { IAllAreas } from '../interfaces/AllAreas.interface';
 import { prismaErrorsCodes400, prismaErrorsCodes404 } from '../utils/prismaErrorsCodes.utils';
 import { ApiError } from '../../config/middlewares/errorHandler/ApiError.middlewares';
-import { IAllDoctors } from '../interfaces/AllDoctors.interface';
 import { allDoctorsfields } from './selectFields/doctors/allDoctors.selectFields';
 import logger from '../../config/logger/winston.logger';
 import PrismaError from '../../config/middlewares/errorHandler/PrismaErrorHandler.middleware';
@@ -17,7 +18,44 @@ export class Doctors {
   static async getAllDoctor(): Promise<IAllDoctors[]> {
     try {
       const response = await prisma.doctor.findMany({
-        select: allDoctorsfields,
+        select: {
+          id: true,
+          prefix: true,
+          firstname: true,
+          lastname: true,
+          avatar: true,
+          email: true,
+          phone: true,
+          gender: true,
+          birthdate: true,
+          introduction: true,
+          qualifications: true,
+          memberships: true,
+          skills: true,
+          appointments: true,
+          area: {
+            select: {
+              area: true,
+              price: true,
+              createdAt: true,
+              updatedAt: true,
+            },
+          },
+          headquarter: {
+            select: {
+              location: {
+                select: {
+                  country: true,
+                },
+              },
+              city: true,
+              address: true,
+              createdAt: true,
+            },
+          },
+          updatedAt: true,
+          createdAt: true,
+        },
       });
       return response;
     } catch (error) {
@@ -60,11 +98,12 @@ export class Doctors {
   static async createDoctor(doctor: INewDoctor): Promise<void> {
     try {
       const {
-        location: { city },
+        headquarter: { city },
         area,
       } = doctor;
       const { id: locationId } = await this.getLocation(city);
       const { id: areaId } = await this.getArea(area);
+
       await prisma.doctor.create({
         data: {
           ...doctor,
@@ -78,14 +117,23 @@ export class Doctors {
     }
   }
 
-  static async updateDoctor(id: string, data: IUpdateDataDoctor): Promise<void> {
+  static async updateDoctor(data: IUpdateDataDoctor): Promise<void> {
     try {
+      const {
+        headquarter: { city },
+        area: { area },
+        id,
+      } = data;
+      const { id: locationId } = await this.getLocation(city);
+      const { id: areaId } = await this.getArea(area);
       await prisma.doctor.update({
         where: {
           id,
         },
         data: {
           ...data,
+          headquarter: { connect: { id: locationId } },
+          area: { connect: { id: areaId } },
         },
       });
     } catch (error) {
@@ -100,15 +148,13 @@ export class Doctors {
     }
   }
 
-  static async deleteDoctor(email: string): Promise<void> {
+  static async deleteDoctor(id: string): Promise<void> {
     try {
       await prisma.doctor.delete({
-        where: { email },
+        where: { id },
       });
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
-        console.log('hello');
-        console.log(error);
         logger.error(error);
         logger.info('Prisma error:', error);
         if (prismaErrorsCodes400.includes(error.code)) throw new PrismaError(error.message, 400);
@@ -119,14 +165,20 @@ export class Doctors {
     }
   }
 
-  private static async getLocation(city: string) {
+  static async getAreas(): Promise<IAllAreas[]> {
     try {
-      return await prisma.headquarter.findFirstOrThrow({
-        where: { city },
-        select: { id: true },
+      return await prisma.area.findMany({
+        select: { id: true, area: true, price: true, doctors: true },
       });
     } catch (error) {
-      throw error;
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        logger.error(error);
+        logger.info('Prisma error:', error);
+        if (prismaErrorsCodes400.includes(error.code)) throw new PrismaError(error.message, 400);
+        if (prismaErrorsCodes404.includes(error.code)) throw new PrismaError(error.message, 404);
+        throw new PrismaError(error.message, 500);
+      }
+      throw ApiError.Internal('Error unknown in Prisma');
     }
   }
 
@@ -134,6 +186,17 @@ export class Doctors {
     try {
       return await prisma.area.findFirstOrThrow({
         where: { area },
+        select: { id: true, area: true },
+      });
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  private static async getLocation(city: string) {
+    try {
+      return await prisma.headquarter.findFirstOrThrow({
+        where: { city },
         select: { id: true },
       });
     } catch (error) {

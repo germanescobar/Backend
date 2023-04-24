@@ -67,7 +67,6 @@ export class Products {
       });
       return;
     } catch (error) {
-      console.log(error);
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
         logger.error(error);
         logger.info('Prisma error:', error);

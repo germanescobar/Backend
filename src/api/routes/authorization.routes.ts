@@ -12,12 +12,7 @@ const authRouter = Router();
 
 authRouter.post('/', authenticationValidator, Auth.authentication);
 authRouter.post('/authorization', authorizationValidator(allowedRoles.GENERAL), Auth.authorization);
-authRouter.post(
-  '/register',
-  formData(PRESET_CLOUDINARY, USERS_FOLDER_CLOUDINARY),
-  userRegisterValidator,
-  Auth.userRegister
-);
+authRouter.post('/register', userRegisterValidator, Auth.userRegister);
 authRouter.post(
   '/register/doctor',
   authorizationValidator(allowedRoles.ADMIN),

@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { Products } from '../service/Products.service';
 import { ApiError } from '../../config/middlewares/errorHandler/ApiError.middlewares';
+import { capitalize } from '../utils/capitalize.utils';
 import PrismaError from '../../config/middlewares/errorHandler/PrismaErrorHandler.middleware';
 
 export class ProductsController {
@@ -22,7 +23,8 @@ export class ProductsController {
   static async getProductsByCategory(req: Request, res: Response, next: NextFunction) {
     try {
       const { category } = req.params;
-      const products = await Products.getProductsByCategory(category);
+      const categoryCapitalized = capitalize(category);
+      const products = await Products.getProductsByCategory(categoryCapitalized);
       res.status(200).json(products);
     } catch (error) {
       if (error instanceof PrismaError) {

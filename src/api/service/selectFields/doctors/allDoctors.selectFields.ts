@@ -21,9 +21,8 @@ export const allDoctorsfields = {
       updatedAt: true,
     },
   },
-  location: {
+  headquarter: {
     select: {
-      country: true,
       city: true,
       address: true,
       createdAt: true,
