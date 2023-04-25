@@ -119,9 +119,7 @@ export class Doctors {
     try {
       const { password } = data;
       if (password) {
-        console.log('mipassword', password);
         const encryptedNewPassword = await encryptPassword(password);
-        console.log('encrypted', encryptedNewPassword);
         await prisma.doctor.update({
           where: { id },
           data: {

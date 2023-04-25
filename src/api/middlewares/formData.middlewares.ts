@@ -9,7 +9,6 @@ import { OBJ_FORM_DATA } from '../utils/constants.utils';
 
 const formData = (preset: string, folderName: string) => {
   return (req: Request, res: Response, next: NextFunction): void => {
-    console.log('entrando a busboy');
     const bb: Busboy = busboy({ headers: req.headers });
     let uploadingCount: number = 0;
     let uploadingFile: boolean = false;
@@ -22,7 +21,6 @@ const formData = (preset: string, folderName: string) => {
 
     bb.on('field', (key, value) => {
       if (OBJ_FORM_DATA.includes(key)) {
-        console.log('field', key, value);
         req.body[key] = JSON.parse(value);
       } else {
         req.body[key] = value;

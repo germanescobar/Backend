@@ -4,11 +4,15 @@ import locations from './locations.json';
 
 const prisma = new PrismaClient();
 
+interface IsLocation {
+  id: string;
+}
+
 const locationSeeder = async (): Promise<void> => {
   try {
     for (const country of locations) {
       for (const city of country.locations) {
-        const isLocation: { id: string } | null = await getlocation(country.country);
+        const isLocation: IsLocation | null = await getlocation(country.country);
         const { city: locationCity, address: locationAddress }: any = city;
         try {
           if (!isLocation) {
@@ -17,9 +21,9 @@ const locationSeeder = async (): Promise<void> => {
               data: { city: locationCity, address: locationAddress, location: { connect: { id } } },
             });
           }
-          const { id } = isLocation as { id: string };
+
           await prisma.headquarter.create({
-            data: { city: locationCity, address: locationAddress, location: { connect: { id } } },
+            data: { city: locationCity, address: locationAddress, location: { connect: { id: isLocation?.id } } },
           });
         } catch (error) {
           logger.info(error);
