@@ -7,6 +7,7 @@ export default function errorHandler(error: Error, req: Request, res: Response, 
     logger.error(`${error.status}: ${error.message}`);
     return res.status(error.status).json(error.message);
   }
+
   logger.error('500: Something went wrong!!!!', error);
   return res.status(500).json('Something went wrong');
 }

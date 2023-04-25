@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { Auth } from '../controllers/Auth.controller';
-import { PRESET_CLOUDINARY, USERS_FOLDER_CLOUDINARY, DOCTORS_FOLDER_CLOUDINARY } from '../utils/constants.utils';
+import { PRESET_CLOUDINARY, DOCTORS_FOLDER_CLOUDINARY } from '../utils/constants.utils';
 import { allowedRoles } from '../utils/roles.utils';
 import authenticationValidator from '../middlewares/authentication.middlewares';
 import authorizationValidator from '../middlewares/authorization.middlewares';

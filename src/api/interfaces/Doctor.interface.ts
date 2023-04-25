@@ -21,7 +21,7 @@ export interface IDoctor {
   password: string;
   role_id: Role;
   roleId: string;
-  headquarter: Headquarter;
+  headquarter: { city: string; address: string; location: { country: string } };
   headquarterId: string;
   area: Area;
   areaId: string;

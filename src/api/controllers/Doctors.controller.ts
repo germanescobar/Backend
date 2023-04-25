@@ -36,6 +36,21 @@ export class DoctorsController {
     }
   }
 
+  static async updateDoctorByUser(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const { id, role } = req.user;
+      if (!id || !role) return next(ApiError.BadRequest());
+      await Doctors.updateDoctorByUser(id, req.body);
+      res.status(200).json('UPDATED');
+    } catch (error) {
+      if (error instanceof PrismaError) {
+        if (error.status === 404) return next(ApiError.NotFound());
+        if (error.status === 400) return next(ApiError.Forbbiden());
+      }
+      return next(ApiError.Internal('Unknown Error'));
+    }
+  }
+
   static async deleteDoctors(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const { id } = req.user;

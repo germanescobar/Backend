@@ -4,9 +4,11 @@ import { INewDoctor } from '../interfaces/NewDoctor.interface';
 import { IUpdateDataDoctor } from '../interfaces/UpdateDataDoctor.interface';
 import { IAllDoctors } from '../interfaces/AllDoctors.interface';
 import { IAllAreas } from '../interfaces/AllAreas.interface';
+import { IUpdateDataDoctorByUser } from '../interfaces/UpdateDataDoctorByUser.interface';
 import { prismaErrorsCodes400, prismaErrorsCodes404 } from '../utils/prismaErrorsCodes.utils';
 import { ApiError } from '../../config/middlewares/errorHandler/ApiError.middlewares';
 import { allDoctorsfields } from './selectFields/doctors/allDoctors.selectFields';
+import encryptPassword from '../utils/encryptPWD.utils';
 import logger from '../../config/logger/winston.logger';
 import PrismaError from '../../config/middlewares/errorHandler/PrismaErrorHandler.middleware';
 
@@ -18,44 +20,7 @@ export class Doctors {
   static async getAllDoctor(): Promise<IAllDoctors[]> {
     try {
       const response = await prisma.doctor.findMany({
-        select: {
-          id: true,
-          prefix: true,
-          firstname: true,
-          lastname: true,
-          avatar: true,
-          email: true,
-          phone: true,
-          gender: true,
-          birthdate: true,
-          introduction: true,
-          qualifications: true,
-          memberships: true,
-          skills: true,
-          appointments: true,
-          area: {
-            select: {
-              area: true,
-              price: true,
-              createdAt: true,
-              updatedAt: true,
-            },
-          },
-          headquarter: {
-            select: {
-              location: {
-                select: {
-                  country: true,
-                },
-              },
-              city: true,
-              address: true,
-              createdAt: true,
-            },
-          },
-          updatedAt: true,
-          createdAt: true,
-        },
+        select: allDoctorsfields,
       });
       return response;
     } catch (error) {
@@ -79,8 +44,10 @@ export class Doctors {
         include: {
           role_id: true,
           area: true,
-          headquarter: true,
           appointments: true,
+          headquarter: {
+            select: { city: true, address: true, location: { select: { country: true } } },
+          },
         },
       })) as IDoctor;
     } catch (error) {
@@ -135,6 +102,37 @@ export class Doctors {
           headquarter: { connect: { id: locationId } },
           area: { connect: { id: areaId } },
         },
+      });
+    } catch (error) {
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        logger.error(error);
+        logger.info('Prisma error:', error);
+        if (prismaErrorsCodes400.includes(error.code)) throw new PrismaError(error.message, 400);
+        if (prismaErrorsCodes404.includes(error.code)) throw new PrismaError(error.message, 404);
+        throw new PrismaError(error.message, 500);
+      }
+      throw ApiError.Internal('Error unknown in Prisma');
+    }
+  }
+
+  static async updateDoctorByUser(id: string, data: IUpdateDataDoctorByUser): Promise<void> {
+    try {
+      const { password } = data;
+      if (password) {
+        console.log('mipassword', password);
+        const encryptedNewPassword = await encryptPassword(password);
+        console.log('encrypted', encryptedNewPassword);
+        await prisma.doctor.update({
+          where: { id },
+          data: {
+            password: encryptedNewPassword,
+          },
+        });
+        return;
+      }
+      await prisma.doctor.update({
+        where: { id },
+        data,
       });
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
