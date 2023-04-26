@@ -7,6 +7,7 @@ import { User } from '@prisma/client';
 import { INewUser } from '../interfaces/NewUser.interface';
 import { prismaErrorsCodes400, prismaErrorsCodes404 } from '../utils/prismaErrorsCodes.utils';
 import { IUpdateDataUser } from '../interfaces/UpdateDataUser.interface';
+import encryptPassword from '../utils/encryptPWD.utils';
 
 const prisma = new PrismaClient();
 
@@ -68,6 +69,15 @@ export class Users {
 
   static async updateUser(id: string, data: IUpdateDataUser): Promise<void> {
     try {
+      const { password } = data;
+      if (password) {
+        const encryptedNewPassword = await encryptPassword(password);
+        await prisma.user.update({
+          where: { id },
+          data: { password: encryptedNewPassword },
+        });
+        return;
+      }
       await prisma.user.update({
         where: {
           id,
