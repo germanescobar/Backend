@@ -57,6 +57,7 @@ export class AuthService {
         if (prismaErrorsCodes400.includes(error.code)) throw new PrismaError(error.message, 400);
         throw new PrismaError(error.message, 500);
       }
+
       throw ApiError.Internal('Error unknown in Prisma');
     }
   }

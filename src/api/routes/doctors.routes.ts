@@ -5,6 +5,7 @@ import { allowedRoles } from '../utils/roles.utils';
 import formData from '../middlewares/formData.middlewares';
 import restrictInvalidDoctorUpdate from '../middlewares/doctorUpdater.middlewares';
 import authorizationValidator from '../middlewares/authorization.middlewares';
+import isValidEmail from '../middlewares/isValidEmail.middleware';
 
 const doctorRouter = Router();
 
@@ -16,6 +17,13 @@ doctorRouter.put(
   formData(PRESET_CLOUDINARY, DOCTORS_FOLDER_CLOUDINARY),
   restrictInvalidDoctorUpdate,
   DoctorsController.updateDoctors
+);
+doctorRouter.patch(
+  '/',
+  authorizationValidator(allowedRoles.DOCTORS),
+  formData(PRESET_CLOUDINARY, DOCTORS_FOLDER_CLOUDINARY),
+  isValidEmail,
+  DoctorsController.updateDoctorByUser
 );
 doctorRouter.delete('/', authorizationValidator(allowedRoles.ADMIN), DoctorsController.deleteDoctors);
 

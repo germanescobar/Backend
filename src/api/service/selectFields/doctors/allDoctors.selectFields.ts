@@ -23,6 +23,11 @@ export const allDoctorsfields = {
   },
   headquarter: {
     select: {
+      location: {
+        select: {
+          country: true,
+        },
+      },
       city: true,
       address: true,
       createdAt: true,

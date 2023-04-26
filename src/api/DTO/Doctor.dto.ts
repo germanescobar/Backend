@@ -1,6 +1,7 @@
 import { IDoctor } from '../interfaces/Doctor.interface';
 
 export class DoctorDTO {
+  readonly id;
   readonly prefix;
   readonly firstname;
   readonly lastname;
@@ -16,8 +17,10 @@ export class DoctorDTO {
   readonly memberships;
   readonly skills;
   readonly appointments;
+  readonly role;
 
   constructor({
+    id,
     prefix,
     firstname,
     lastname,
@@ -27,13 +30,19 @@ export class DoctorDTO {
     gender,
     birthdate,
     introduction,
-    location: { country, city, address },
+    headquarter: {
+      city,
+      address,
+      location: { country },
+    },
     area: { area, price },
     qualifications,
     memberships,
     skills,
     appointments,
+    role_id: { role },
   }: IDoctor) {
+    this.id = id;
     this.prefix = prefix;
     this.firstname = firstname;
     this.lastname = lastname;
@@ -43,12 +52,13 @@ export class DoctorDTO {
     this.gender = gender;
     this.birthdate = birthdate;
     this.introduction = introduction;
-    this.location = { country, city, address };
+    this.location = { city, address, country };
     this.area = { area, price };
     this.qualifications = qualifications;
     this.memberships = memberships;
     this.skills = skills;
     this.appointments = appointments;
+    this.role = role;
   }
 }
 
