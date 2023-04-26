@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client';
+import { Location, PrismaClient } from '@prisma/client';
 import logger from '../../../../config/logger/winston.logger';
 import locations from './locations.json';
 
@@ -8,18 +8,25 @@ const locationSeeder = async (): Promise<void> => {
   try {
     for (const country of locations) {
       for (const city of country.locations) {
+        const isLocation: { id: string } | null = await getlocation(country.country);
         const { city: locationCity, address: locationAddress }: any = city;
-        const locationData = { country: country.country, city: locationCity, address: locationAddress };
         try {
-          await prisma.location.create({
-            data: { ...locationData },
+          if (!isLocation) {
+            const { id } = await createLocation(country.country);
+            await prisma.headquarter.create({
+              data: { city: locationCity, address: locationAddress, location: { connect: { id } } },
+            });
+          }
+          const { id } = isLocation as { id: string };
+          await prisma.headquarter.create({
+            data: { city: locationCity, address: locationAddress, location: { connect: { id } } },
           });
-          logger.info('The location seeder was completed succesfully.');
-          await prisma.$disconnect();
         } catch (error) {
           logger.info(error);
           logger.error(error);
         }
+        logger.info('The location seeder was completed succesfully.');
+        await prisma.$disconnect();
       }
     }
   } catch (error) {
@@ -28,5 +35,26 @@ const locationSeeder = async (): Promise<void> => {
     process.exit(1);
   }
 };
+
+async function createLocation(country: string): Promise<Location> {
+  try {
+    return await prisma.location.create({
+      data: { country },
+    });
+  } catch (error) {
+    throw error;
+  }
+}
+
+async function getlocation(country: string): Promise<{ id: string } | null> {
+  try {
+    return await prisma.location.findFirst({
+      where: { country },
+      select: { id: true },
+    });
+  } catch (error) {
+    throw error;
+  }
+}
 
 locationSeeder();

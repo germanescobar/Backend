@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import { ApiError } from '../../config/middlewares/errorHandler/ApiError.middlewares';
 import { Doctors } from '../service/Doctors.service';
 import { IAllDoctors } from '../interfaces/AllDoctors.interface';
+import { IAllAreas } from '../interfaces/AllAreas.interface';
 import PrismaError from '../../config/middlewares/errorHandler/PrismaErrorHandler.middleware';
 
 export class DoctorsController {
@@ -22,9 +23,9 @@ export class DoctorsController {
 
   static async updateDoctors(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      const { id, role, ...data } = req.body;
-      if (!id || !role) next(ApiError.BadRequest());
-      await Doctors.updateDoctor(id, data);
+      const { id, role } = req.user;
+      if (!id || !role) return next(ApiError.BadRequest());
+      await Doctors.updateDoctor(req.body);
       res.status(200).json('UPDATED');
     } catch (error) {
       if (error instanceof PrismaError) {
@@ -35,12 +36,26 @@ export class DoctorsController {
     }
   }
 
-  static async deleteDoctors(req: Request, res: Response, next: NextFunction) {
+  static async deleteDoctors(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      const { id, email } = req.body;
-      if (!id) next(ApiError.BadRequest());
-      await Doctors.deleteDoctor(email);
-      res.status(204);
+      const { id } = req.user;
+      const { id: idDoctor } = req.body;
+      if (!id || !idDoctor) return next(ApiError.BadRequest());
+      await Doctors.deleteDoctor(idDoctor);
+      res.status(200).json('DELETED');
+    } catch (error) {
+      if (error instanceof PrismaError) {
+        if (error.status === 404) return next(ApiError.NotFound());
+        if (error.status === 400) return next(ApiError.Forbbiden());
+      }
+      return next(ApiError.Internal('Unknown Error'));
+    }
+  }
+
+  static async getDoctorsAreas(req: Request, res: Response, next: NextFunction) {
+    try {
+      const areas: IAllAreas[] = await Doctors.getAreas();
+      res.status(200).json(areas);
     } catch (error) {
       if (error instanceof PrismaError) {
         if (error.status === 404) return next(ApiError.NotFound());

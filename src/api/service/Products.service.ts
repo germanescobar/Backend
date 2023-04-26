@@ -7,6 +7,7 @@ import { INewProduct } from '../interfaces/NewProduct.interface';
 import { Category } from '@prisma/client';
 import { IGetCategory } from '../interfaces/GetCategory.interface';
 import { IAllProducts } from '../interfaces/AllProducts.interface';
+import { IUpdateDataProduct } from '../interfaces/UpdateDataProduct.interface';
 import { allProductsFields } from './selectFields/products/allProducts.selectFields';
 
 const prisma = new PrismaClient();
@@ -20,6 +21,25 @@ export class Products {
         select: allProductsFields,
       });
       return products;
+    } catch (error) {
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        logger.info('Prisma error:', error);
+        if (prismaErrorsCodes400.includes(error.code)) throw new PrismaError(error.message, 400);
+        if (prismaErrorsCodes404.includes(error.code)) throw new PrismaError(error.message, 404);
+        throw new PrismaError(error.message, 500);
+      }
+      throw ApiError.Internal('Error unknown in Prisma');
+    }
+  }
+
+  static async getProductsByCategory(category: string): Promise<IAllProducts[]> {
+    try {
+      return await prisma.product.findMany({
+        where: {
+          category: { name: category },
+        },
+        select: allProductsFields,
+      });
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
         logger.info('Prisma error:', error);
@@ -76,10 +96,26 @@ export class Products {
     }
   }
 
+  static async updateProduct(id: string, data: IUpdateDataProduct): Promise<void> {
+    try {
+      await prisma.product.update({
+        where: { id },
+        data: { ...data },
+      });
+    } catch (error) {
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        logger.info('Prisma error:', error);
+        if (prismaErrorsCodes404.includes(error.code)) throw new PrismaError(error.message, 404);
+        throw new PrismaError(error.message, 500);
+      }
+      throw ApiError.Internal('Error unknown in Prisma');
+    }
+  }
+
   private static async createCategory(category: string): Promise<Category> {
     try {
       return await prisma.category.create({
-        data: { category },
+        data: { name: category },
       });
     } catch (error) {
       throw error;
@@ -90,7 +126,7 @@ export class Products {
     try {
       return await prisma.category.findFirstOrThrow({
         where: {
-          category,
+          name: category,
         },
         select: {
           id: true,

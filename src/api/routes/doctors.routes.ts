@@ -9,6 +9,7 @@ import authorizationValidator from '../middlewares/authorization.middlewares';
 const doctorRouter = Router();
 
 doctorRouter.get('/', DoctorsController.getAllDoctors);
+doctorRouter.get('/areas', DoctorsController.getDoctorsAreas);
 doctorRouter.put(
   '/',
   authorizationValidator(allowedRoles.DOCTORS),

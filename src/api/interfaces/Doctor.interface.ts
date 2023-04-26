@@ -1,7 +1,7 @@
 import { Appointment } from '@prisma/client';
 import { Role } from '@prisma/client';
 import { Area } from '@prisma/client';
-import { Location } from '@prisma/client';
+import { Headquarter } from '@prisma/client';
 
 export interface IDoctor {
   id: string;
@@ -21,8 +21,8 @@ export interface IDoctor {
   password: string;
   role_id: Role;
   roleId: string;
-  location: Location;
-  locationId: string;
+  headquarter: Headquarter;
+  headquarterId: string;
   area: Area;
   areaId: string;
   createdAt: Date;

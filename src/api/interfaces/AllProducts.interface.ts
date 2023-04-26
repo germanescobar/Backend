@@ -9,7 +9,7 @@ export interface IAllProducts {
   discount: number;
   description: string;
   category: {
-    category: string;
+    name: string;
   };
   createdAt: Date;
   updatedAt: Date;

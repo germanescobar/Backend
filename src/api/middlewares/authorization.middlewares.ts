@@ -27,7 +27,7 @@ const authorizationValidator = (
       return next();
     } catch (error) {
       if (error instanceof JsonWebTokenError) return next(ApiError.Forbbiden());
-      return next(ApiError.Internal('Something went wrong'));
+      return next(ApiError.Internal('Something went wrong here!'));
     }
   };
 };

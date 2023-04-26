@@ -15,7 +15,7 @@ const doctorRegisterSchema = Joi.object({
   memberships: Joi.array().items(Joi.string()),
   skills: Joi.array().items(Joi.string()).required(),
   password: Joi.string().required(),
-  location: Joi.object({
+  headquarter: Joi.object({
     city: Joi.string().required(),
     country: Joi.string().required(),
   }),

@@ -23,8 +23,7 @@ export interface IAllDoctors {
     createdAt: Date;
     updatedAt: Date;
   };
-  location: {
-    country: string;
+  headquarter: {
     city: string;
     address: string;
     createdAt: Date;

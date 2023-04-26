@@ -35,6 +35,7 @@ const formData = (preset: string, folderName: string) => {
         (error, response) => {
           if (error) next(ApiError.Internal('Cloudinary Error'));
           req.body[key] = response?.secure_url;
+
           uploadingFile = false;
           uploadingCount--;
           done();
