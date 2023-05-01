@@ -7,7 +7,7 @@
     "dev": "NODE_ENV=development ts-node-dev --transpile-only --respawn --exit-child  ./src/index.ts",
     "prisma:migrate": "npx prisma migrate dev",
     "prisma:studio": "npx prisma studio",
-    "prisma:seeders": "ts-node-dev ./src/api/database/seeders/locations/locations.seeders.ts && ts-node-dev ./src/api/database/seeders/areas/areas.seeders.ts && ts-node-dev ./src/api/database/seeders/roles/roles.seeders.ts && ts-node-dev ./src/api/database/seeders/admin/admin.seeders.ts",
+    "prisma:seeders": "ts-node-dev ./src/api/database/seeders/locations/locations.seeders.ts && ts-node-dev ./src/api/database/seeders/areas/areas.seeders.ts && ts-node-dev ./src/api/database/seeders/roles/roles.seeders.ts && ts-node-dev ./src/api/database/seeders/admin/admin.seeders.ts && ts-node-dev ./src/api/database/seeders/doctors/doctors.seeders.ts",
     "prisma:reset": "npx prisma migrate reset"
   },
   "keywords": [],
@@ -38,6 +38,7 @@
     "invariant": "^2.2.4",
     "joi": "^17.9.1",
     "jsonwebtoken": "^9.0.0",
+    "stripe": "^12.3.0",
     "winston": "^3.8.2"
   },
   "config": {

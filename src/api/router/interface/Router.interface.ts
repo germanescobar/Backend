@@ -7,4 +7,5 @@ export interface IRouter {
   products: Router;
   categories: Router;
   locations: Router;
+  payments: Router;
 }
