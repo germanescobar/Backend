@@ -8,7 +8,6 @@ export class PaymentsController {
 
   static async checkout(req: Request, res: Response, next: NextFunction) {
     try {
-      console.log('h3lo');
       const { id: userId } = req.user;
       const { paymentMethod, cart, amount } = req.body;
       await Payments.processPayment({ paymentMethod, cart, amount, userId });

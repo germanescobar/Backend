@@ -14,7 +14,7 @@ export class Payments {
     try {
       const { id } = paymentMethod;
       const card = paymentMethod.card;
-      const response = await stripe.paymentIntents.create({
+      const { status: state, id: idpayment } = await stripe.paymentIntents.create({
         currency: 'USD',
         payment_method: id,
         amount: amount,
@@ -24,11 +24,11 @@ export class Payments {
         cart,
         amount,
         card,
-        state: response.status,
+        state,
       };
       const { id: orderId } = await Orders.createOrder(order);
       if (orderId) {
-        const { status } = await stripe.paymentIntents.confirm(response.id);
+        const { status } = await stripe.paymentIntents.confirm(idpayment);
         await Orders.confirmOrder(orderId, status);
       }
     } catch (error) {
