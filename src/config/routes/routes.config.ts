@@ -9,4 +9,5 @@ export default function routes(app: express.Express) {
   app.use('/api/v1/products', routes.products);
   app.use('/api/v1/categories', routes.categories);
   app.use('/api/v1/locations', routes.locations);
+  app.use('/api/v1/payments', routes.payments);
 }

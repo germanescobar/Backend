@@ -4,6 +4,7 @@ import doctorRouter from '../routes/doctors.routes';
 import productsRouter from '../routes/products.routes';
 import categoriesRouter from '../routes/categories.routes';
 import locationRouter from '../routes/locations.routes';
+import paymentsRoute from '../routes/payment.routes';
 import { IRouter } from './interface/Router.interface';
 
 export class Router implements IRouter {
@@ -13,6 +14,7 @@ export class Router implements IRouter {
   readonly products;
   readonly categories;
   readonly locations;
+  readonly payments;
   constructor() {
     this.users = userRouter;
     this.auth = authRouter;
@@ -20,5 +22,6 @@ export class Router implements IRouter {
     this.products = productsRouter;
     this.categories = categoriesRouter;
     this.locations = locationRouter;
+    this.payments = paymentsRoute;
   }
 }

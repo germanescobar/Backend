@@ -157,8 +157,13 @@ model Order {
   userId       String
   products     Product[]
   appointments Appointment[]
-  total        Decimal
-  state        OrderState
+  brand        String
+  country      String
+  exp_month    Int
+  exp_year     Int
+  last4        String
+  state        String
+  total        Int
   createdAt    DateTime      @default(now())
 }
 
@@ -171,11 +176,4 @@ model Admin {
   roleId    String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-}
-
-enum OrderState {
-  CREATED
-  PROCESSING
-  COMPLETED
-  CANCELLED
 }

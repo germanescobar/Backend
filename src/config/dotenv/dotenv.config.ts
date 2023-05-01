@@ -11,4 +11,5 @@ export default {
   CLOUDINARY_API_KEY: process.env.CLOUDINARY_API_KEY,
   CLOUDINARY_API_SECRET: process.env.CLOUDINARY_API_SECRET,
   ADMIN_KEY: process.env.ADMIN_KEY as string,
+  STRIPE_KEY: process.env.STRIPE_KEY as string,
 };
