@@ -39,7 +39,7 @@ export class Doctors {
     try {
       return (await prisma.doctor.findFirstOrThrow({
         where: {
-          OR: [{ id: searchValue }, { email: searchValue }],
+          OR: [{ id: searchValue }, { email: searchValue }, { firstname: searchValue }],
         },
         include: {
           role_id: true,

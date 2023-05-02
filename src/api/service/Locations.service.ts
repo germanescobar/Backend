@@ -25,4 +25,22 @@ export class Locations {
       throw ApiError.Internal('Error unknown in Prisma');
     }
   }
+
+  static async getLocation(searchValue: string) {
+    try {
+      return await prisma.headquarter.findFirst({
+        where: {
+          OR: [{ id: searchValue }, { city: searchValue }],
+        },
+      });
+    } catch (error) {
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        logger.info('Prisma error:', error);
+        if (prismaErrorsCodes400.includes(error.code)) throw new PrismaError(error.message, 400);
+        if (prismaErrorsCodes404.includes(error.code)) throw new PrismaError(error.message, 404);
+        throw new PrismaError(error.message, 500);
+      }
+      throw ApiError.Internal('Error unknown in Prisma');
+    }
+  }
 }
