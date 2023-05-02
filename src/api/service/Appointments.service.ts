@@ -24,17 +24,17 @@ export class Appointments {
           const [day, month, year] = appointmentDate.split('/');
           await Locations.getLocation(citySelected);
           const { id: patientId } = await Patient.createPatient(patientData);
-          await prisma.appointment.create({
-            data: {
-              user: { connect: { id: userId } },
-              patient: { connect: { id: patientId } },
-              doctor: { connect: { id: preferredDoctorSelected } },
-              area: { connect: { id: specialitySelected } },
-              date: new Date(`${year}-${month}-${day}`),
-              scheduleAt: appointmentTime,
-              headquarter: { connect: { id } },
-            },
-          });
+          // await prisma.appointment.create({
+          //   data: {
+          //     user: { connect: { id: userId } },
+          //     patient: { connect: { id: patientId } },
+          //     doctor: { connect: { id: preferredDoctorSelected } },
+          //     area: { connect: { id: specialitySelected } },
+          //     date: new Date(`${year}-${month}-${day}`),
+          //     scheduleAt: appointmentTime,
+          //     headquarter: { connect: { id } },
+          //   },
+          // });
         }
       }
     } catch (error) {
