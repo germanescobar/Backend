@@ -6,6 +6,7 @@ import { ApiError } from '../../config/middlewares/errorHandler/ApiError.middlew
 import { prismaErrorsCodes400, prismaErrorsCodes404 } from '../utils/prismaErrorsCodes.utils';
 import logger from '../../config/logger/winston.logger';
 import PrismaError from '../../config/middlewares/errorHandler/PrismaErrorHandler.middleware';
+import { Products } from './Products.service';
 
 export class Payments {
   constructor() {}
@@ -26,10 +27,13 @@ export class Payments {
         card,
         state,
       };
-      const { id: orderId } = await Orders.createOrder(order);
+      const { id: orderId, productsData } = await Orders.createOrder(order);
       if (orderId) {
         const { status } = await stripe.paymentIntents.confirm(idpayment);
         await Orders.confirmOrder(orderId, status);
+        if (productsData) {
+          await Products.updateProductStock(productsData);
+        }
       }
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError) {

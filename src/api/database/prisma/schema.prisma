@@ -32,28 +32,31 @@ model User {
 }
 
 model Patient {
-  id           String        @id @default(cuid())
-  firstname    String
-  lastname     String
-  isAdult      Boolean
-  email        String        @unique
-  appointments Appointment[]
-  createdAt    DateTime      @default(now())
-  updatedAt    DateTime      @updatedAt
+  id             String        @id @default(cuid())
+  firstname      String
+  lastname       String
+  isAdult        Boolean
+  gender         String
+  phone          String
+  email          String        @unique
+  identification String
+  appointments   Appointment[]
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
 }
 
 model Appointment {
   id            String      @id @default(cuid())
   user          User        @relation(fields: [userId], references: [id])
   userId        String
-  patient       Patient?    @relation(fields: [patientEmail], references: [email])
-  patientEmail  String?
+  patient       Patient?    @relation(fields: [patientId], references: [id])
+  patientId     String?
   doctor        Doctor      @relation(fields: [doctorId], references: [id])
   doctorId      String
   area          Area        @relation(fields: [areaId], references: [id])
   areaId        String
   date          DateTime
-  scheduleAt    DateTime
+  scheduleAt    String
   order         Order?      @relation(fields: [orderId], references: [id])
   orderId       String?
   reason        String

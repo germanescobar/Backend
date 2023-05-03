@@ -9,6 +9,8 @@ import { IGetCategory } from '../interfaces/GetCategory.interface';
 import { IAllProducts } from '../interfaces/AllProducts.interface';
 import { IUpdateDataProduct } from '../interfaces/UpdateDataProduct.interface';
 import { allProductsFields } from './selectFields/products/allProducts.selectFields';
+import { IProductsToUpdateStock } from '../interfaces/ProductsToUpdateStock.interface';
+import { product } from '../interfaces/Cart.interface';
 
 const prisma = new PrismaClient();
 
@@ -102,6 +104,26 @@ export class Products {
         where: { id },
         data: { ...data },
       });
+    } catch (error) {
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        logger.info('Prisma error:', error);
+        if (prismaErrorsCodes404.includes(error.code)) throw new PrismaError(error.message, 404);
+        throw new PrismaError(error.message, 500);
+      }
+      throw ApiError.Internal('Error unknown in Prisma');
+    }
+  }
+
+  static async updateProductStock(productsData: IProductsToUpdateStock[]) {
+    try {
+      for (const { id, quantity } of productsData) {
+        await prisma.product.update({
+          where: { id },
+          data: {
+            stock: { decrement: quantity },
+          },
+        });
+      }
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
         logger.info('Prisma error:', error);

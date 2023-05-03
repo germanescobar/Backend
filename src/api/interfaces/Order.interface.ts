@@ -1,7 +1,7 @@
 import { ICart } from './Cart.interface';
 import { card } from './Payment.interface';
 
-export interface Order {
+export interface IOrder {
   userId: string;
   cart: ICart;
   amount: number;

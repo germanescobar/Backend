@@ -1,8 +1,9 @@
 export interface ICart {
   products: product[];
+  appointments: appointment[];
 }
 
-type product = {
+export type product = {
   id: string;
   product: string;
   image: string;
@@ -12,4 +13,32 @@ type product = {
   discount: number;
   price: number;
   stock: number;
+};
+
+export type appointment = {
+  id: string;
+  patientData: patientData;
+  appointmentData: appointmentData;
+};
+
+export type patientData = {
+  patientName: string;
+  patientLastname: string;
+  patientId: string;
+  patientEmail: string;
+  patientPhone: string;
+  isAdult: string;
+  patientGender: string;
+  patientBirth: string;
+};
+
+export type appointmentData = {
+  specialitySelected: string;
+  preferredDoctorSelected: string;
+  countrySelected: string;
+  citySelected: string;
+  appointmentDate: string;
+  appointmentTime: string;
+  consultationReasons: string;
+  appointmentPrice: number;
 };
