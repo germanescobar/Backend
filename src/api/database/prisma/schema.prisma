@@ -60,7 +60,7 @@ model Appointment {
   order         Order?      @relation(fields: [orderId], references: [id])
   orderId       String?
   reason        String
-  headquarter   Headquarter @relation(fields: [headquarterId], references: [id, city])
+  headquarter   Headquarter @relation(fields: [headquarterId], references: [id])
   headquarterId String
   createdAt     DateTime    @default(now())
 }

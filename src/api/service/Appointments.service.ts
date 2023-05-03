@@ -4,6 +4,7 @@ import { ApiError } from '../../config/middlewares/errorHandler/ApiError.middlew
 import { appointment } from '../interfaces/Cart.interface';
 import { Patient } from './Patients.service';
 import { Locations } from './Locations.service';
+import { IIdentification } from '../interfaces/Identification.interface';
 import logger from '../../config/logger/winston.logger';
 import PrismaError from '../../config/middlewares/errorHandler/PrismaErrorHandler.middleware';
 
@@ -14,30 +15,55 @@ export class Appointments {
 
   static async createAppointment(appointments: appointment[], userId: string) {
     try {
+      const appointmentsIds = [];
       for (const appointment of appointments) {
         const { patientEmail } = appointment.patientData;
+        const { patientData, appointmentData } = appointment;
+        const {
+          preferredDoctorSelected,
+          specialitySelected,
+          appointmentDate,
+          appointmentTime,
+          citySelected,
+          consultationReasons,
+        } = appointmentData;
+        const [day, month, year] = appointmentDate.split('/');
         const isPatient = await Patient.getPatient(patientEmail);
+        const locatiodId = await Locations.getLocation(citySelected);
         if (!isPatient) {
-          const { patientData, appointmentData } = appointment;
-          const { preferredDoctorSelected, specialitySelected, appointmentDate, appointmentTime, citySelected } =
-            appointmentData;
-          const [day, month, year] = appointmentDate.split('/');
-          await Locations.getLocation(citySelected);
           const { id: patientId } = await Patient.createPatient(patientData);
-          // await prisma.appointment.create({
-          //   data: {
-          //     user: { connect: { id: userId } },
-          //     patient: { connect: { id: patientId } },
-          //     doctor: { connect: { id: preferredDoctorSelected } },
-          //     area: { connect: { id: specialitySelected } },
-          //     date: new Date(`${year}-${month}-${day}`),
-          //     scheduleAt: appointmentTime,
-          //     headquarter: { connect: { id } },
-          //   },
-          // });
+          const { id } = await prisma.appointment.create({
+            data: {
+              user: { connect: { id: userId } },
+              patient: { connect: { id: patientId } },
+              doctor: { connect: { id: preferredDoctorSelected } },
+              area: { connect: { id: specialitySelected } },
+              date: new Date(`${year}-${month}-${day}`),
+              scheduleAt: appointmentTime,
+              headquarter: { connect: { id: locatiodId?.id } },
+              reason: consultationReasons,
+            },
+          });
+          appointmentsIds.push({ id });
+        } else {
+          const { id } = await prisma.appointment.create({
+            data: {
+              user: { connect: { id: userId } },
+              patient: { connect: { id: isPatient.id } },
+              doctor: { connect: { id: preferredDoctorSelected } },
+              area: { connect: { id: specialitySelected } },
+              date: new Date(`${year}-${month}-${day}`),
+              scheduleAt: appointmentTime,
+              headquarter: { connect: { id: locatiodId?.id } },
+              reason: consultationReasons,
+            },
+          });
+          appointmentsIds.push({ id });
         }
       }
+      return appointmentsIds;
     } catch (error) {
+      console.log(error);
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
         logger.info('Prisma error:', error);
         if (prismaErrorsCodes404.includes(error.code)) throw new PrismaError(error.message, 404);
