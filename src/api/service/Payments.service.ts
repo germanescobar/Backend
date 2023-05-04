@@ -2,11 +2,12 @@ import stripe from '../../config/stripe/stripe.config';
 import { Prisma } from '@prisma/client';
 import { IPayment } from '../interfaces/Payment.interface';
 import { Orders } from './Orders.service';
+import { Products } from './Products.service';
+import { Notifications } from './Notifications.service';
 import { ApiError } from '../../config/middlewares/errorHandler/ApiError.middlewares';
 import { prismaErrorsCodes400, prismaErrorsCodes404 } from '../utils/prismaErrorsCodes.utils';
 import logger from '../../config/logger/winston.logger';
 import PrismaError from '../../config/middlewares/errorHandler/PrismaErrorHandler.middleware';
-import { Products } from './Products.service';
 
 export class Payments {
   constructor() {}
@@ -31,6 +32,7 @@ export class Payments {
       if (orderId) {
         const { status } = await stripe.paymentIntents.confirm(paymentId);
         await Orders.confirmOrder(orderId, status);
+        await Notifications.sendEmail(userId, orderId);
         if (productsData) {
           await Products.updateProductStock(productsData);
         }
@@ -44,7 +46,7 @@ export class Payments {
         if (prismaErrorsCodes404.includes(error.code)) throw new PrismaError(error.message, 404);
         throw new PrismaError(error.message, 500);
       }
-      throw ApiError.Internal('Error unknown in Prisma');
+      throw ApiError.Internal('Error at payment process');
     }
   }
 }

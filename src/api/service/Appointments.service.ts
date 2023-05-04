@@ -3,6 +3,7 @@ import { prismaErrorsCodes400, prismaErrorsCodes404 } from '../utils/prismaError
 import { ApiError } from '../../config/middlewares/errorHandler/ApiError.middlewares';
 import { appointment } from '../interfaces/Cart.interface';
 import { Patient } from './Patients.service';
+import { Doctors } from './Doctors.service';
 import { Users } from './Users.service';
 import { Locations } from './Locations.service';
 import { IIdentification } from '../interfaces/Identification.interface';
@@ -19,6 +20,9 @@ export class Appointments {
     try {
       if (role === roles.USER) {
         return await Users.getUserAppointments(id);
+      }
+      if (role === roles.DOCTOR) {
+        return await Doctors.getDoctorsAppointments(id);
       }
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
