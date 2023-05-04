@@ -52,6 +52,35 @@ export class Users {
     }
   }
 
+  static async getUserAppointments(id: string) {
+    try {
+      return await prisma.user.findUniqueOrThrow({
+        where: { id },
+        select: {
+          appointments: {
+            select: {
+              area: { select: { area: true } },
+              date: true,
+              doctor: { select: { firstname: true, lastname: true, email: true, phone: true } },
+              headquarter: { select: { address: true, city: true } },
+              patient: { select: { firstname: true, lastname: true } },
+              scheduleAt: true,
+            },
+          },
+        },
+      });
+    } catch (error) {
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        logger.error(error);
+        logger.info('Prisma error:', error);
+        if (prismaErrorsCodes400.includes(error.code)) throw new PrismaError(error.message, 400);
+        if (prismaErrorsCodes404.includes(error.code)) throw new PrismaError(error.message, 404);
+        throw new PrismaError(error.message, 500);
+      }
+      throw ApiError.Internal('Error unknown in Prisma');
+    }
+  }
+
   static async createUser(newUser: INewUser): Promise<void> {
     try {
       await prisma.user.create({ data: { ...newUser, role_id: { connect: { id: newUser.role_id } } } });

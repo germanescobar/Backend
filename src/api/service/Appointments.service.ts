@@ -3,8 +3,10 @@ import { prismaErrorsCodes400, prismaErrorsCodes404 } from '../utils/prismaError
 import { ApiError } from '../../config/middlewares/errorHandler/ApiError.middlewares';
 import { appointment } from '../interfaces/Cart.interface';
 import { Patient } from './Patients.service';
+import { Users } from './Users.service';
 import { Locations } from './Locations.service';
 import { IIdentification } from '../interfaces/Identification.interface';
+import { roles } from '../utils/roles.utils';
 import logger from '../../config/logger/winston.logger';
 import PrismaError from '../../config/middlewares/errorHandler/PrismaErrorHandler.middleware';
 
@@ -13,7 +15,23 @@ const prisma = new PrismaClient();
 export class Appointments {
   constructor() {}
 
-  static async createAppointment(appointments: appointment[], userId: string) {
+  static async getAppointments(id: string, role: number) {
+    try {
+      if (role === roles.USER) {
+        return await Users.getUserAppointments(id);
+      }
+    } catch (error) {
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        logger.info('Prisma error:', error);
+        if (prismaErrorsCodes404.includes(error.code)) throw new PrismaError(error.message, 404);
+        if (prismaErrorsCodes400.includes(error.code)) throw new PrismaError(error.message, 400);
+        throw new PrismaError(error.message, 500);
+      }
+      throw ApiError.Internal('Error unknown in Prisma');
+    }
+  }
+
+  static async createAppointment(appointments: appointment[], userId: string): Promise<IIdentification[]> {
     try {
       const appointmentsIds = [];
       for (const appointment of appointments) {
@@ -63,7 +81,6 @@ export class Appointments {
       }
       return appointmentsIds;
     } catch (error) {
-      console.log(error);
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
         logger.info('Prisma error:', error);
         if (prismaErrorsCodes404.includes(error.code)) throw new PrismaError(error.message, 404);

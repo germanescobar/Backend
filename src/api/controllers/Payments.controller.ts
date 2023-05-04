@@ -10,7 +10,8 @@ export class PaymentsController {
     try {
       const { id: userId } = req.user;
       const { paymentMethod, cart, amount } = req.body;
-      await Payments.processPayment({ paymentMethod, cart, amount, userId });
+      const { orderId } = await Payments.processPayment({ paymentMethod, cart, amount, userId });
+      res.status(200).json({ id: orderId });
     } catch (error) {
       if (error instanceof PrismaError) {
         if (error.status === 404) return next(ApiError.NotFound());
