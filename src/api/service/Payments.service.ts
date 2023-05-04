@@ -15,7 +15,7 @@ export class Payments {
     try {
       const { id } = paymentMethod;
       const card = paymentMethod.card;
-      const { status: state, id: idpayment } = await stripe.paymentIntents.create({
+      const { status: state, id: paymentId } = await stripe.paymentIntents.create({
         currency: 'USD',
         payment_method: id,
         amount: amount,
@@ -29,12 +29,14 @@ export class Payments {
       };
       const { id: orderId, productsData } = await Orders.createOrder(order);
       if (orderId) {
-        const { status } = await stripe.paymentIntents.confirm(idpayment);
+        const { status } = await stripe.paymentIntents.confirm(paymentId);
         await Orders.confirmOrder(orderId, status);
         if (productsData) {
           await Products.updateProductStock(productsData);
         }
+        return { orderId };
       }
+      throw ApiError.Internal('Something went wrong with your purchase please call your nearest dev!');
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
         logger.info('Prisma error:', error);
