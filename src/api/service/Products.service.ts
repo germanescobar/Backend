@@ -24,6 +24,7 @@ export class Products {
       });
       return products;
     } catch (error) {
+      console.log(error);
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
         logger.info('Prisma error:', error);
         if (prismaErrorsCodes400.includes(error.code)) throw new PrismaError(error.message, 400);
