@@ -21,8 +21,6 @@ export class UsersController {
       return next(ApiError.Internal('Unknown Error'));
     }
   }
-
-  // TO-DO: Check if this controller should be necessary
   static async deleteUser(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const { id } = req.body;

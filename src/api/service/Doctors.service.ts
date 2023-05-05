@@ -13,7 +13,6 @@ import logger from '../../config/logger/winston.logger';
 import PrismaError from '../../config/middlewares/errorHandler/PrismaErrorHandler.middleware';
 
 const prisma = new PrismaClient();
-
 export class Doctors {
   constructor() {}
 
@@ -50,6 +49,33 @@ export class Doctors {
           },
         },
       })) as IDoctor;
+    } catch (error) {
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        logger.error(error);
+        logger.info('Prisma error:', error);
+        if (prismaErrorsCodes400.includes(error.code)) throw new PrismaError(error.message, 400);
+        if (prismaErrorsCodes404.includes(error.code)) throw new PrismaError(error.message, 404);
+        throw new PrismaError(error.message, 500);
+      }
+      throw ApiError.Internal('Error unknown in Prisma');
+    }
+  }
+
+  static async getDoctorsAppointments(id: string) {
+    try {
+      return await prisma.doctor.findUniqueOrThrow({
+        where: { id },
+        select: {
+          appointments: {
+            select: {
+              date: true,
+              patient: { select: { firstname: true, lastname: true, phone: true, email: true, gender: true } },
+              scheduleAt: true,
+              reason: true,
+            },
+          },
+        },
+      });
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
         logger.error(error);

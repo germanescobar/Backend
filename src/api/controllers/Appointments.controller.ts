@@ -7,8 +7,8 @@ export class AppointmentsController {
   static async appointments(req: Request, res: Response, next: NextFunction) {
     try {
       const { id, role } = req.user;
-      const appointemnts = await Appointments.getAppointments(id, role);
-      res.status(200).json(appointemnts);
+      const appointments = await Appointments.getAppointments(id, role);
+      res.status(200).json(appointments);
     } catch (error) {}
   }
 }

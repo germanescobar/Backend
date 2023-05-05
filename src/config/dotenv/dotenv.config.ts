@@ -12,4 +12,6 @@ export default {
   CLOUDINARY_API_SECRET: process.env.CLOUDINARY_API_SECRET,
   ADMIN_KEY: process.env.ADMIN_KEY as string,
   STRIPE_KEY: process.env.STRIPE_KEY as string,
+  SMTP_EMAIL: process.env.SMTP_EMAIL,
+  SMTP_PASSWORD: process.env.SMTP_PASSWORD,
 };

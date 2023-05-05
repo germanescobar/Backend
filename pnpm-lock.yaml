@@ -9,6 +9,7 @@ specifiers:
   '@types/invariant': ^2.2.35
   '@types/jsonwebtoken': ^9.0.1
   '@types/node': ^18.15.11
+  '@types/nodemailer': ^6.4.7
   bcrypt: ^5.1.0
   busboy: ^1.6.0
   cloudinary: ^1.36.1
@@ -20,6 +21,7 @@ specifiers:
   invariant: ^2.2.4
   joi: ^17.9.1
   jsonwebtoken: ^9.0.0
+  nodemailer: ^6.9.1
   prisma: ^4.12.0
   stripe: ^12.3.0
   ts-node-dev: ^2.0.0
@@ -37,6 +39,7 @@ dependencies:
   invariant: 2.2.4
   joi: 17.9.1
   jsonwebtoken: 9.0.0
+  nodemailer: 6.9.1
   stripe: 12.3.0
   winston: 3.8.2
 
@@ -48,6 +51,7 @@ devDependencies:
   '@types/invariant': 2.2.35
   '@types/jsonwebtoken': 9.0.1
   '@types/node': 18.15.11
+  '@types/nodemailer': 6.4.7
   commitizen: 4.3.0
   cz-conventional-changelog: 3.3.0
   prisma: 4.12.0
@@ -327,6 +331,12 @@ packages:
 
   /@types/node/18.15.11:
     resolution: {integrity: sha512-E5Kwq2n4SbMzQOn6wnmBjuK9ouqlURrcZDVfbo9ftDDTFt3nk7ZKK4GMOzoYgnpQJKcxwQw+lGaBvvlMo0qN/Q==}
+
+  /@types/nodemailer/6.4.7:
+    resolution: {integrity: sha512-f5qCBGAn/f0qtRcd4SEn88c8Fp3Swct1731X4ryPKqS61/A3LmmzN8zaEz7hneJvpjFbUUgY7lru/B/7ODTazg==}
+    dependencies:
+      '@types/node': 18.15.11
+    dev: true
 
   /@types/qs/6.9.7:
     resolution: {integrity: sha512-FGa1F62FT09qcrueBA6qYTrJPVDzah9a+493+o2PCXsesWHIn27G98TsSMs3WPNbZIEj4+VJf6saSFpvD+3Zsw==}
@@ -1797,6 +1807,11 @@ packages:
         optional: true
     dependencies:
       whatwg-url: 5.0.0
+    dev: false
+
+  /nodemailer/6.9.1:
+    resolution: {integrity: sha512-qHw7dOiU5UKNnQpXktdgQ1d3OFgRAekuvbJLcdG5dnEo/GtcTHRYM7+UfJARdOFU9WUQO8OiIamgWPmiSFHYAA==}
+    engines: {node: '>=6.0.0'}
     dev: false
 
   /nopt/5.0.0:
