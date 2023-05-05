@@ -17,7 +17,6 @@ const productsSeeder = async () => {
       });
     }
   } catch (error) {
-    console.log(error);
     logger.error(error);
   }
 };
@@ -34,7 +33,6 @@ async function getCategory(category: string): Promise<IGetCategory> {
     });
     return { id };
   } catch (error) {
-    console.log(error);
     throw error;
   }
 }
