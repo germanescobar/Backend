@@ -1,0 +1,30 @@
+[
+  {
+    "area": "Family Physician",
+    "price": 100
+  },
+  {
+    "area": "Endocrinologist",
+    "price": 200
+  },
+  {
+    "area": "Oncologist",
+    "price": 500
+  },
+  {
+    "area": "General Surgeon",
+    "price": 100
+  },
+  {
+    "area": "Medical Advisor",
+    "price": 280
+  },
+  {
+    "area": "Cosmetic Surgeon",
+    "price": 700
+  },
+  {
+    "area": "Neurologist",
+    "price": 350
+  }
+]

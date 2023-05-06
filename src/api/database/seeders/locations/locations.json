@@ -1,0 +1,78 @@
+[
+  {
+    "id": "1",
+    "country": "Colombia",
+    "locations": [
+      {
+        "city": "Bogotá",
+        "address": "Carrer d'Apuntadors, 3"
+      },
+      {
+        "city": "Cali",
+        "address": "Parque de Negocios Mas Blau II, Carrer de l'Alta Ribagorca 18"
+      },
+      {
+        "city": "Medellín",
+        "address": "Avda Gabriel Roca, 14, local 2B"
+      },
+      {
+        "city": "Bucaramanga",
+        "address": "Calle de Blasco Ibanez, 1"
+      },
+      {
+        "city": "Pereira",
+        "address": "Calle Valdegarea, 12"
+      }
+    ]
+  },
+  {
+    "id": "2",
+    "country": "USA",
+    "locations": [
+      {
+        "city": "New York",
+        "address": "525 Paseo Del Pueblo Norte"
+      },
+      {
+        "city": "Los Angeles",
+        "address": "2800 W Bethel Ave"
+      },
+      {
+        "city": "Miami",
+        "address": "1945 20th Ave SE"
+      }
+    ]
+  },
+  {
+    "id": "3",
+    "country": "México",
+    "locations": [
+      {
+        "city": "CDMX",
+        "address": "Marina Plaza Bonita N/A"
+      },
+      {
+        "city": "Guadalajara",
+        "address": "Carra A Miguel Aleman Km 23.7"
+      },
+      {
+        "city": "Monterrey",
+        "address": "Atenas 101"
+      }
+    ]
+  },
+  {
+    "id": "4",
+    "country": "Argentina",
+    "locations": [
+      {
+        "city": "Buenos Aires",
+        "address": "Aguado 2385"
+      },
+      {
+        "city": "Rosario",
+        "address": "San Fernando del Valle de Catamarca"
+      }
+    ]
+  }
+]
