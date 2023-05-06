@@ -58,8 +58,8 @@ export class Appointments {
             data: {
               user: { connect: { id: userId } },
               patient: { connect: { id: patientId } },
-              doctor: { connect: { id: preferredDoctorSelected } },
-              area: { connect: { id: specialitySelected } },
+              doctor: { connect: { id: preferredDoctorSelected.id } },
+              area: { connect: { id: specialitySelected.id } },
               date: new Date(`${year}-${month}-${day}`),
               scheduleAt: appointmentTime,
               headquarter: { connect: { id: locatiodId?.id } },
@@ -72,8 +72,8 @@ export class Appointments {
             data: {
               user: { connect: { id: userId } },
               patient: { connect: { id: isPatient.id } },
-              doctor: { connect: { id: preferredDoctorSelected } },
-              area: { connect: { id: specialitySelected } },
+              doctor: { connect: { id: preferredDoctorSelected.id } },
+              area: { connect: { id: specialitySelected.id } },
               date: new Date(`${year}-${month}-${day}`),
               scheduleAt: appointmentTime,
               headquarter: { connect: { id: locatiodId?.id } },
