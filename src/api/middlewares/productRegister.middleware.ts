@@ -8,7 +8,7 @@ const productRegisterValidator = (req: Request, res: Response, next: NextFunctio
   const { price, stock, discount } = req.body;
   req.body = {
     ...req.body,
-    price: +price,
+    price: +price * 100,
     stock: +stock,
     discount: +discount,
   };

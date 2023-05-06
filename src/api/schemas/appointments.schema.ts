@@ -14,8 +14,14 @@ const appointment = Joi.array().items(
       patientBirth: Joi.string().required(),
     }),
     appointmentData: Joi.object({
-      specialitySelected: Joi.string().required(),
-      preferredDoctorSelected: Joi.string().required(),
+      specialitySelected: Joi.object({
+        id: Joi.string().required(),
+        specialityName: Joi.string().required(),
+      }).required(),
+      preferredDoctorSelected: Joi.object({
+        id: Joi.string().required(),
+        doctorName: Joi.string().required(),
+      }).required(),
       countrySelected: Joi.string().required(),
       citySelected: Joi.string().required(),
       appointmentDate: Joi.string().required(),

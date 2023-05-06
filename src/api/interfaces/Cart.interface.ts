@@ -33,8 +33,14 @@ export type patientData = {
 };
 
 export type appointmentData = {
-  specialitySelected: string;
-  preferredDoctorSelected: string;
+  specialitySelected: {
+    id: string;
+    doctorName: string;
+  };
+  preferredDoctorSelected: {
+    id: string;
+    doctorName: string;
+  };
   countrySelected: string;
   citySelected: string;
   appointmentDate: string;
