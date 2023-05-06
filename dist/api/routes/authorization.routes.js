@@ -1,0 +1,20 @@
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const Auth_controller_1 = require("../controllers/Auth.controller");
+const constants_utils_1 = require("../utils/constants.utils");
+const roles_utils_1 = require("../utils/roles.utils");
+const authentication_middlewares_1 = __importDefault(require("../middlewares/authentication.middlewares"));
+const authorization_middlewares_1 = __importDefault(require("../middlewares/authorization.middlewares"));
+const userRegister_middlewares_1 = __importDefault(require("../middlewares/userRegister.middlewares"));
+const doctorRegister_middlewares_1 = __importDefault(require("../middlewares/doctorRegister.middlewares"));
+const formData_middlewares_1 = __importDefault(require("../middlewares/formData.middlewares"));
+const authRouter = (0, express_1.Router)();
+authRouter.post('/', authentication_middlewares_1.default, Auth_controller_1.Auth.authentication);
+authRouter.post('/authorization', (0, authorization_middlewares_1.default)(roles_utils_1.allowedRoles.GENERAL), Auth_controller_1.Auth.authorization);
+authRouter.post('/register', userRegister_middlewares_1.default, Auth_controller_1.Auth.userRegister);
+authRouter.post('/register/doctor', (0, authorization_middlewares_1.default)(roles_utils_1.allowedRoles.ADMIN), (0, formData_middlewares_1.default)(constants_utils_1.PRESET_CLOUDINARY, constants_utils_1.DOCTORS_FOLDER_CLOUDINARY), doctorRegister_middlewares_1.default, Auth_controller_1.Auth.doctorRegister);
+exports.default = authRouter;

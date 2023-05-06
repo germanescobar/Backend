@@ -1,0 +1,20 @@
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const Doctors_controller_1 = require("../controllers/Doctors.controller");
+const constants_utils_1 = require("../utils/constants.utils");
+const roles_utils_1 = require("../utils/roles.utils");
+const formData_middlewares_1 = __importDefault(require("../middlewares/formData.middlewares"));
+const doctorUpdater_middlewares_1 = __importDefault(require("../middlewares/doctorUpdater.middlewares"));
+const authorization_middlewares_1 = __importDefault(require("../middlewares/authorization.middlewares"));
+const isValidEmail_middleware_1 = __importDefault(require("../middlewares/isValidEmail.middleware"));
+const doctorRouter = (0, express_1.Router)();
+doctorRouter.get('/', Doctors_controller_1.DoctorsController.getAllDoctors);
+doctorRouter.get('/areas', Doctors_controller_1.DoctorsController.getDoctorsAreas);
+doctorRouter.put('/', (0, authorization_middlewares_1.default)(roles_utils_1.allowedRoles.DOCTORS), (0, formData_middlewares_1.default)(constants_utils_1.PRESET_CLOUDINARY, constants_utils_1.DOCTORS_FOLDER_CLOUDINARY), doctorUpdater_middlewares_1.default, Doctors_controller_1.DoctorsController.updateDoctors);
+doctorRouter.patch('/', (0, authorization_middlewares_1.default)(roles_utils_1.allowedRoles.DOCTORS), (0, formData_middlewares_1.default)(constants_utils_1.PRESET_CLOUDINARY, constants_utils_1.DOCTORS_FOLDER_CLOUDINARY), isValidEmail_middleware_1.default, Doctors_controller_1.DoctorsController.updateDoctorByUser);
+doctorRouter.delete('/', (0, authorization_middlewares_1.default)(roles_utils_1.allowedRoles.ADMIN), Doctors_controller_1.DoctorsController.deleteDoctors);
+exports.default = doctorRouter;
