@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { Appointments } from '../service/Appointments.service';
 
-class AppointmentsController {
+export class AppointmentsController {
   constructor() {}
 
   static async appointments(req: Request, res: Response, next: NextFunction) {
@@ -12,5 +12,3 @@ class AppointmentsController {
     } catch (error) {}
   }
 }
-
-export { AppointmentsController };
