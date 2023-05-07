@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import { Locations } from '../service/Locations.service';
 import { ApiError } from '../../config/middlewares/errorHandler/ApiError.middlewares';
 import PrismaError from '../../config/middlewares/errorHandler/PrismaErrorHandler.middleware';
-export class LocationsController {
+export default class LocationsController {
   contructor() {}
 
   static async getLocations(req: Request, res: Response, next: NextFunction) {
