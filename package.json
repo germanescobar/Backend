@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "dev": "NODE_ENV=development ts-node-dev --transpile-only --respawn --exit-child  ./src/index.ts",
     "build": "tsc",
