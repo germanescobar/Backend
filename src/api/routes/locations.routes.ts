@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { LocationsController } from '../controllers/Locations.controller';
+import LocationsController from '../controllers/Locations.controller';
 
 const locationRouter = Router();
 
